@@ -2,114 +2,333 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Meu Primeiro Jogo</title>
-
   <style>
+    :root {
+      --bg: #214a8a;
+      --card: #ffffff;
+      --shadow: 0 12px 30px rgba(0,0,0,.18);
+    }
+
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       text-align: center;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: white;
-      margin: 0;
-      padding: 20px;
+      background: var(--bg);
+      color: #fff;
+      padding: 18px 14px 30px;
     }
 
-    h1 { margin-top: 10px; }
+    h1 { margin: 12px 0 8px; font-size: 44px; }
+    p { margin: 6px 0; opacity: .95; }
 
-    #game {
-      width: 300px;
-      height: 300px;
-      background: #eee;
-      margin: 20px auto;
+    .hud {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0 14px;
+    }
+    .pill {
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.25);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      min-width: 120px;
+    }
+
+    .board {
+      width: 320px;
+      height: 320px;
+      background: #f3f3f3;
+      border-radius: 26px;
+      margin: 16px auto 14px;
       position: relative;
-      border-radius: 16px;
+      box-shadow: var(--shadow);
       overflow: hidden;
+      touch-action: none;
+      user-select: none;
     }
 
-    #player {
-      width: 30px;
-      height: 30px;
-      background: black;
+    .player {
+      width: 28px;
+      height: 28px;
+      background: #111;
+      border-radius: 8px;
       position: absolute;
-      left: 135px;
-      top: 135px;
-      border-radius: 6px;
+      left: 146px;
+      top: 146px;
+    }
+
+    .coin {
+      width: 18px;
+      height: 18px;
+      background: #ffcc00;
+      border-radius: 50%;
+      position: absolute;
+      box-shadow: 0 6px 16px rgba(0,0,0,.18);
     }
 
     .controls {
-      margin-top: 15px;
-      display: inline-block;
+      display: grid;
+      grid-template-columns: 90px 90px 90px;
+      grid-template-rows: 90px 90px 90px;
+      gap: 12px;
+      justify-content: center;
+      margin: 14px auto 0;
+      width: fit-content;
     }
 
-    .controls button {
-      width: 60px;
-      height: 60px;
-      font-size: 22px;
-      margin: 6px;
-      border-radius: 12px;
+    .btn {
+      background: rgba(255,255,255,.92);
       border: none;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      font-size: 34px;
+      cursor: pointer;
+    }
+    .btn:active { transform: scale(.98); }
+
+    .btn.up { grid-column: 2; grid-row: 1; }
+    .btn.left { grid-column: 1; grid-row: 2; }
+    .btn.right { grid-column: 3; grid-row: 2; }
+    .btn.down { grid-column: 2; grid-row: 3; }
+
+    /* Telas (start/gameover) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.45);
+      padding: 18px;
+    }
+
+    .modal {
+      width: min(420px, 92vw);
+      background: var(--card);
+      color: #111;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    .modal h2 { margin: 6px 0 8px; }
+    .modal p { margin: 8px 0; color: #333; }
+
+    .action {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 14px;
+      background: #214a8a;
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .action:active { transform: scale(.99); }
+
+    .hint {
+      font-size: 12px;
+      color: #444;
+      margin-top: 10px;
     }
   </style>
 </head>
-
 <body>
   <h1>🎮 Meu Primeiro Jogo</h1>
-  <p>Use os botões para mover o quadrado</p>
+  <p>Pegue as moedas antes do tempo acabar!</p>
 
-  <div id="game">
-    <div id="player"></div>
+  <div class="hud">
+    <div class="pill">⭐ Pontos: <span id="score">0</span></div>
+    <div class="pill">⏱ Tempo: <span id="time">20</span>s</div>
+    <div class="pill">🔥 Melhor: <span id="best">0</span></div>
+  </div>
+
+  <div class="board" id="board">
+    <div class="player" id="player"></div>
+    <div class="coin" id="coin"></div>
   </div>
 
   <div class="controls">
-    <div>
-      <button onclick="moveUp()">⬆️</button>
+    <button class="btn up" id="up">⬆️</button>
+    <button class="btn left" id="left">⬅️</button>
+    <button class="btn right" id="right">➡️</button>
+    <button class="btn down" id="down">⬇️</button>
+  </div>
+
+  <!-- Tela inicial -->
+  <div class="overlay" id="startScreen" style="display:flex;">
+    <div class="modal">
+      <h2>Bem-vinda ao jogo!</h2>
+      <p>Use os botões (ou as setas do teclado) para mover o quadrado e pegar as moedas.</p>
+      <button class="action" id="startBtn">Jogar</button>
+      <div class="hint">Dica: no celular, use só os botões 🙂</div>
     </div>
-    <div>
-      <button onclick="moveLeft()">⬅️</button>
-      <button onclick="moveRight()">➡️</button>
-    </div>
-    <div>
-      <button onclick="moveDown()">⬇️</button>
+  </div>
+
+  <!-- Game Over -->
+  <div class="overlay" id="gameOverScreen">
+    <div class="modal">
+      <h2>Game Over 😅</h2>
+      <p>Sua pontuação: <b><span id="finalScore">0</span></b></p>
+      <button class="action" id="restartBtn">Jogar de novo</button>
+      <div class="hint">Você consegue bater o recorde!</div>
     </div>
   </div>
 
   <script>
+    const board = document.getElementById("board");
     const player = document.getElementById("player");
-    let x = 135;
-    let y = 135;
-    const step = 10;
+    const coin = document.getElementById("coin");
 
-    function clamp(val, min, max) {
-      return Math.max(min, Math.min(max, val));
-    }
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+    const bestEl = document.getElementById("best");
 
-    function render() {
+    const startScreen = document.getElementById("startScreen");
+    const gameOverScreen = document.getElementById("gameOverScreen");
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const finalScoreEl = document.getElementById("finalScore");
+
+    const btnUp = document.getElementById("up");
+    const btnDown = document.getElementById("down");
+    const btnLeft = document.getElementById("left");
+    const btnRight = document.getElementById("right");
+
+    // Config do jogo
+    const STEP = 14;      // passo por movimento
+    const START_TIME = 20; // segundos
+
+    let x = 146, y = 146;
+    let score = 0;
+    let timeLeft = START_TIME;
+    let timerId = null;
+    let playing = false;
+
+    // Best score (salva no navegador)
+    const BEST_KEY = "meu_primeiro_jogo_best";
+    let best = Number(localStorage.getItem(BEST_KEY) || "0");
+    bestEl.textContent = best;
+
+    function setPlayerPos() {
       player.style.left = x + "px";
       player.style.top = y + "px";
     }
 
-    function moveUp() {
-      y = clamp(y - step, 0, 270);
-      render();
+    function randomPos(max) {
+      return Math.floor(Math.random() * (max + 1));
     }
 
-    function moveDown() {
-      y = clamp(y + step, 0, 270);
-      render();
+    function placeCoin() {
+      const maxX = board.clientWidth - coin.clientWidth;
+      const maxY = board.clientHeight - coin.clientHeight;
+
+      const cx = randomPos(maxX);
+      const cy = randomPos(maxY);
+
+      coin.style.left = cx + "px";
+      coin.style.top = cy + "px";
     }
 
-    function moveLeft() {
-      x = clamp(x - step, 0, 270);
-      render();
+    function clamp(n, min, max) {
+      return Math.max(min, Math.min(max, n));
     }
 
-    function moveRight() {
-      x = clamp(x + step, 0, 270);
-      render();
+    function checkCollision() {
+      const p = player.getBoundingClientRect();
+      const c = coin.getBoundingClientRect();
+
+      const hit = !(p.right < c.left || p.left > c.right || p.bottom < c.top || p.top > c.bottom);
+      if (hit) {
+        score += 1;
+        scoreEl.textContent = score;
+        placeCoin();
+      }
     }
 
-    render();
+    function move(dx, dy) {
+      if (!playing) return;
+
+      const maxX = board.clientWidth - player.clientWidth;
+      const maxY = board.clientHeight - player.clientHeight;
+
+      x = clamp(x + dx, 0, maxX);
+      y = clamp(y + dy, 0, maxY);
+
+      setPlayerPos();
+      checkCollision();
+    }
+
+    function startGame() {
+      // reset
+      score = 0;
+      timeLeft = START_TIME;
+      scoreEl.textContent = score;
+      timeEl.textContent = timeLeft;
+
+      x = 146; y = 146;
+      setPlayerPos();
+      placeCoin();
+
+      // telas
+      startScreen.style.display = "none";
+      gameOverScreen.style.display = "none";
+
+      playing = true;
+
+      // timer
+      if (timerId) clearInterval(timerId);
+      timerId = setInterval(() => {
+        timeLeft -= 1;
+        timeEl.textContent = timeLeft;
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame() {
+      playing = false;
+      if (timerId) clearInterval(timerId);
+
+      // recorde
+      if (score > best) {
+        best = score;
+        localStorage.setItem(BEST_KEY, String(best));
+        bestEl.textContent = best;
+      }
+
+      finalScoreEl.textContent = score;
+      gameOverScreen.style.display = "flex";
+    }
+
+    // Botões (celular)
+    btnUp.addEventListener("click", () => move(0, -STEP));
+    btnDown.addEventListener("click", () => move(0, STEP));
+    btnLeft.addEventListener("click", () => move(-STEP, 0));
+    btnRight.addEventListener("click", () => move(STEP, 0));
+
+    // Teclado (PC)
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp") move(0, -STEP);
+      if (e.key === "ArrowDown") move(0, STEP);
+      if (e.key === "ArrowLeft") move(-STEP, 0);
+      if (e.key === "ArrowRight") move(STEP, 0);
+    });
+
+    // Começar / reiniciar
+    startBtn.addEventListener("click", startGame);
+    restartBtn.addEventListener("click", startGame);
+
+    // Estado inicial
+    setPlayerPos();
+    placeCoin();
   </script>
 </body>
 </html>
