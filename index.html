@@ -6,294 +6,149 @@
   <title>Meu Primeiro Jogo</title>
   <style>
     :root{
-      --bg1:#0f2c5c;
-      --bg2:#2a5aa6;
-      --card:#ffffff;
+      --bg1:#0f2c5c; --bg2:#2a5aa6;
       --shadow: 0 10px 30px rgba(0,0,0,.18);
-      --text:#0b1530;
-      --muted:#5b6b86;
-      --accent:#ffcc00;
-      --danger:#ff3b30;
-      --ok:#34c759;
+      --text:#0b1530; --muted:#5b6b86;
+      --accent:#ffcc00; --danger:#ff3b30; --ok:#34c759;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      min-height:100vh;
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      color: white;
-      display:flex;
-      justify-content:center;
-      padding:18px 10px 30px;
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh; background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:#fff; display:flex; justify-content:center; padding:18px 10px 30px;
     }
-    .wrap{
-      width:min(520px, 100%);
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-    }
-    .title{
-      text-align:center;
-      font-weight:800;
-      font-size: clamp(28px, 6vw, 44px);
-      line-height:1.05;
-      margin-top:6px;
-      text-shadow: 0 6px 16px rgba(0,0,0,.2);
-    }
-    .subtitle{
-      text-align:center;
-      margin:0;
-      opacity:.9;
-      font-size: 15px;
-    }
+    .wrap{width:min(520px, 100%); display:flex; flex-direction:column; gap:14px;}
+    .title{ text-align:center; font-weight:900; font-size: clamp(28px, 6vw, 44px); margin-top:6px; }
+    .subtitle{ text-align:center; margin:0; opacity:.9; font-size:15px; }
+
     .panel{
       background: rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.20);
-      border-radius: 18px;
-      padding:12px;
-      box-shadow: var(--shadow);
+      border-radius: 18px; padding:12px; box-shadow: var(--shadow);
       backdrop-filter: blur(6px);
     }
-    .hud{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:space-between;
-      align-items:center;
-    }
+    .hud{display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;}
     .pill{
       background: rgba(255,255,255,.14);
       border:1px solid rgba(255,255,255,.22);
-      border-radius: 999px;
-      padding:8px 12px;
-      font-weight:700;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      min-width: 120px;
-      justify-content:center;
+      border-radius: 999px; padding:8px 12px; font-weight:800;
+      display:flex; gap:8px; align-items:center; min-width: 120px; justify-content:center;
     }
-    .pill span{
-      font-weight:800;
-      color: var(--accent);
-    }
+    .pill span{font-weight:900; color:var(--accent)}
 
     .gameCard{
       background: rgba(255,255,255,.12);
       border:1px solid rgba(255,255,255,.22);
-      border-radius: 22px;
-      padding: 14px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      align-items:center;
+      border-radius: 22px; padding: 14px;
+      display:flex; flex-direction:column; gap:12px; align-items:center;
     }
     #board{
-      width: min(420px, 92vw);
-      height: min(420px, 92vw);
+      width: min(420px, 92vw); height: min(420px, 92vw);
       background: rgba(255,255,255,.92);
-      border-radius: 26px;
-      position:relative;
-      overflow:hidden;
-      box-shadow: var(--shadow);
-      touch-action: none; /* ajuda no celular */
+      border-radius: 26px; position:relative; overflow:hidden;
+      box-shadow: var(--shadow); touch-action:none; user-select:none;
     }
 
-    /* jogador */
+    /* personagem (agora pode ser emoji ou cor) */
     #player{
-      width: 26px;
-      height: 26px;
-      background: #111;
-      border-radius: 8px;
-      position:absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%,-50%);
+      width: 26px; height: 26px;
+      background:#111; border-radius: 10px;
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px;
     }
 
-    /* moeda */
     .coin{
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+      width: 20px; height: 20px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #fff7b1, #ffcc00 45%, #c98c00 100%);
-      position:absolute;
-      box-shadow: 0 6px 14px rgba(0,0,0,.2);
+      position:absolute; box-shadow: 0 6px 14px rgba(0,0,0,.2);
       border: 1px solid rgba(0,0,0,.08);
     }
-
-    /* inimigo */
     .enemy{
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
+      width: 24px; height: 24px; border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #ffd0cf, #ff3b30 60%, #a60000 100%);
-      position:absolute;
-      box-shadow: 0 8px 16px rgba(0,0,0,.18);
+      position:absolute; box-shadow: 0 8px 16px rgba(0,0,0,.18);
       border: 1px solid rgba(0,0,0,.08);
     }
-
-    /* obstáculos */
     .wall{
-      position:absolute;
-      background: rgba(15, 44, 92, .25);
+      position:absolute; background: rgba(15, 44, 92, .25);
       border: 1px solid rgba(15, 44, 92, .22);
-      border-radius: 14px;
-      box-shadow: inset 0 2px 0 rgba(255,255,255,.35);
+      border-radius: 14px; box-shadow: inset 0 2px 0 rgba(255,255,255,.35);
     }
 
     .controls{
-      display:grid;
-      grid-template-columns: 70px 70px 70px;
-      grid-template-rows: 70px 70px 70px;
-      gap:12px;
-      justify-content:center;
-      align-items:center;
-      user-select:none;
+      display:grid; grid-template-columns: 70px 70px 70px; grid-template-rows: 70px 70px 70px;
+      gap:12px; justify-content:center; align-items:center; user-select:none;
     }
     .btn{
-      width:70px;
-      height:70px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.90);
-      border: none;
-      box-shadow: var(--shadow);
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text);
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      cursor:pointer;
+      width:70px; height:70px; border-radius: 18px;
+      background: rgba(255,255,255,.90); border:none; box-shadow: var(--shadow);
+      font-size: 28px; font-weight: 900; color: var(--text);
+      display:flex; justify-content:center; align-items:center; cursor:pointer;
     }
-    .btn:active{
-      transform: translateY(1px) scale(.99);
-      background: rgba(255,255,255,.98);
-    }
-    .btn.disabled{
-      opacity:.5;
-      pointer-events:none;
-    }
+    .btn:active{ transform: translateY(1px) scale(.99); background: rgba(255,255,255,.98); }
+    .btn.disabled{ opacity:.5; pointer-events:none; }
 
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-      align-items:center;
-      margin-top:6px;
-    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; margin-top:6px;}
     .action{
-      border:none;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight:800;
-      cursor:pointer;
-      box-shadow: var(--shadow);
+      border:none; border-radius: 14px; padding: 12px 14px;
+      font-weight:900; cursor:pointer; box-shadow: var(--shadow);
     }
     .primary{ background: var(--accent); color:#111; }
     .danger{ background: var(--danger); color:white; }
     .ghost{ background: rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.25); }
-    .small{ padding: 10px 12px; font-weight:800; }
+    .small{ padding: 10px 12px; font-weight:900; }
 
-    /* telas (modais) */
     .overlay{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      padding: 16px;
-      z-index: 20;
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; justify-content:center; align-items:center; padding: 16px; z-index:20;
     }
     .overlay.show{ display:flex; }
     .modal{
-      width:min(520px, 100%);
-      background: white;
-      color: var(--text);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: var(--shadow);
+      width:min(520px, 100%); background:white; color: var(--text);
+      border-radius: 18px; padding: 16px; box-shadow: var(--shadow);
     }
     .modal h2{ margin: 4px 0 6px; }
     .modal p{ margin: 0 0 10px; color: var(--muted); }
-    .modal .row{ margin-top: 10px; }
     .badge{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      background: #f1f5ff;
-      border:1px solid #dbe6ff;
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-weight:800;
-      margin: 8px 0;
+      display:inline-flex; gap:8px; align-items:center;
+      background: #f1f5ff; border:1px solid #dbe6ff;
+      padding: 10px 12px; border-radius: 14px; font-weight:900; margin: 8px 0;
     }
-    .badge b{ color: #0f2c5c; }
+    .badge b{ color:#0f2c5c; }
 
-    /* ajuda */
-    details{
-      color:white;
-    }
-    summary{
-      cursor:pointer;
-      font-weight:800;
-      margin-bottom:6px;
-    }
     .help{
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.20);
-      border-radius: 16px;
-      padding: 12px;
+      background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.20);
+      border-radius: 16px; padding: 12px;
     }
+    summary{ cursor:pointer; font-weight:900; margin-bottom:6px; }
     .help code{ background: rgba(0,0,0,.18); padding:2px 6px; border-radius: 8px; }
 
-    /* tela inicial */
-    .startCard{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:stretch;
-    }
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    input, select{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border:1px solid #d8dbe6;
-      font-weight:700;
-      font-size: 16px;
-      outline:none;
-    }
-    label{ font-weight:800; color:#0f2c5c; }
+    /* barra de vidas */
+    .hearts{ letter-spacing: 2px; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <div class="title">🎮 Meu Primeiro Jogo</div>
-    <p class="subtitle">Pegue as moedas, desvie do inimigo e faça o maior recorde!</p>
+    <p class="subtitle">Fases + Vidas + Personagem + Som (e depois APK!)</p>
 
     <div class="panel hud">
       <div class="pill">👤 <span id="hudName">Jogador</span></div>
+      <div class="pill">🧡 Vidas: <span id="hudLivesText">❤️❤️❤️</span></div>
+      <div class="pill">🧩 Fase: <span id="hudLevel">1</span></div>
       <div class="pill">⭐ Pontos: <span id="hudScore">0</span></div>
       <div class="pill">🏆 Recorde: <span id="hudBest">0</span></div>
       <div class="pill">⏱️ Tempo: <span id="hudTime">30</span>s</div>
     </div>
 
     <div class="gameCard">
-      <div id="board" aria-label="Área do jogo">
-        <div id="player"></div>
-        <!-- moedas/inimigos/obstáculos entram via JS -->
+      <div id="board">
+        <div id="player">🙂</div>
       </div>
 
-      <div class="controls" aria-label="Controles">
+      <div class="controls">
         <div></div>
         <button class="btn" id="upBtn">⬆️</button>
         <div></div>
@@ -316,11 +171,11 @@
 
     <div class="help">
       <details>
-        <summary>📌 Dicas rápidas</summary>
+        <summary>📌 O que cada parte faz (bem simples)</summary>
         <div>
-          • No teclado: <code>W A S D</code> ou <code>↑ ↓ ← →</code><br/>
-          • No celular: use os botões.<br/>
-          • Objetivo: pegar <b id="goalLabel">10</b> moedas para vencer.<br/>
+          • <b>HTML</b> = as “peças” (tabuleiro, botões, telas).<br/>
+          • <b>CSS</b> = beleza (cores, cantos, sombras).<br/>
+          • <b>JavaScript</b> = regras do jogo (mover, pontos, vidas, fases).<br/>
         </div>
       </details>
     </div>
@@ -330,28 +185,39 @@
   <div class="overlay show" id="startOverlay">
     <div class="modal">
       <h2>Começar</h2>
-      <p>Escolha o nome e a dificuldade.</p>
+      <p>Escolha o nome, o personagem e a dificuldade.</p>
 
-      <div class="startCard">
-        <div class="field">
-          <label>Seu nome</label>
-          <input id="nameInput" maxlength="18" placeholder="Ex: Clecia" />
+      <div class="row" style="gap:12px; flex-direction:column; align-items:stretch;">
+        <div>
+          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Seu nome</div>
+          <input id="nameInput" maxlength="18" placeholder="Ex: Clecia" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
         </div>
 
-        <div class="field">
-          <label>Dificuldade</label>
-          <select id="difficulty">
+        <div>
+          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Personagem</div>
+          <select id="skinSelect" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
+            <option value="🙂">🙂 Smile</option>
+            <option value="😎">😎 Cool</option>
+            <option value="👾">👾 Alien</option>
+            <option value="🐱">🐱 Gatinho</option>
+            <option value="🦄">🦄 Unicórnio</option>
+            <option value="⚫">⚫ Bola preta</option>
+            <option value="🟥">🟥 Quadrado vermelho</option>
+          </select>
+        </div>
+
+        <div>
+          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Dificuldade</div>
+          <select id="difficulty" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
             <option value="easy">Fácil</option>
             <option value="normal" selected>Normal</option>
             <option value="hard">Difícil</option>
           </select>
         </div>
 
-        <div class="badge">🎯 Objetivo: <b><span id="goalPreview">10</span> moedas</b> para vencer</div>
+        <div class="badge">🎯 Objetivo por fase: <b><span id="goalPreview">8</span> moedas</b></div>
 
-        <div class="row">
-          <button class="action primary" id="startBtn">▶️ Jogar</button>
-        </div>
+        <button class="action primary" id="startBtn">▶️ Jogar</button>
       </div>
     </div>
   </div>
@@ -373,47 +239,42 @@
   <!-- Vitória -->
   <div class="overlay" id="winOverlay">
     <div class="modal">
-      <h2>🎉 Você venceu!</h2>
-      <p>Você alcançou o objetivo!</p>
+      <h2>🎉 Você venceu a fase!</h2>
+      <p id="winMsg">Boa!</p>
+      <div class="badge">🧩 Fase: <b id="winLevel">1</b></div>
       <div class="badge">⭐ Pontos: <b id="winScore">0</b></div>
       <div class="badge">🏆 Recorde: <b id="winBest">0</b></div>
       <div class="row">
-        <button class="action primary" id="nextLevelBtn">🚀 Jogar de novo</button>
+        <button class="action primary" id="nextLevelBtn">➡️ Próxima fase</button>
         <button class="action ghost" id="winBackBtn">🏠 Voltar</button>
       </div>
     </div>
   </div>
 
 <script>
-/* =========================
-   CONFIG (fácil de mudar)
-========================= */
-const SETTINGS = {
-  boardSize: 420,        // o CSS controla visual; aqui é lógica
-  baseTime: 30,
-  goalCoins: 10,
-};
-
+/* ==== CONFIG ==== */
+const BASE = { time: 30, goalCoins: 8, lives: 3 };
 let soundOn = true;
 
-/* =========================
-   ELEMENTOS
-========================= */
+/* ==== ELEMENTOS ==== */
 const board = document.getElementById("board");
 const playerEl = document.getElementById("player");
+
 const hudName = document.getElementById("hudName");
+const hudLivesText = document.getElementById("hudLivesText");
+const hudLevel = document.getElementById("hudLevel");
 const hudScore = document.getElementById("hudScore");
 const hudBest = document.getElementById("hudBest");
 const hudTime = document.getElementById("hudTime");
-const goalLabel = document.getElementById("goalLabel");
-const goalPreview = document.getElementById("goalPreview");
 
 const startOverlay = document.getElementById("startOverlay");
 const overOverlay = document.getElementById("overOverlay");
 const winOverlay = document.getElementById("winOverlay");
 
 const nameInput = document.getElementById("nameInput");
+const skinSelect = document.getElementById("skinSelect");
 const difficultySel = document.getElementById("difficulty");
+const goalPreview = document.getElementById("goalPreview");
 
 const startBtn = document.getElementById("startBtn");
 const restartBtn = document.getElementById("restartBtn");
@@ -431,424 +292,412 @@ const finalBest = document.getElementById("finalBest");
 const playAgainBtn = document.getElementById("playAgainBtn");
 const backStartBtn = document.getElementById("backStartBtn");
 
+const winMsg = document.getElementById("winMsg");
+const winLevel = document.getElementById("winLevel");
 const winScore = document.getElementById("winScore");
 const winBest = document.getElementById("winBest");
 const nextLevelBtn = document.getElementById("nextLevelBtn");
 const winBackBtn = document.getElementById("winBackBtn");
 
-/* =========================
-   ÁUDIO (SEM ARQUIVOS)
-========================= */
-let audioCtx = null;
+/* ==== ÁUDIO (sem arquivos) ==== */
+let audioCtx=null;
 function beep(freq=440, duration=0.08, type="sine", gain=0.08){
   if(!soundOn) return;
   try{
-    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
-    o.type = type;
-    o.frequency.value = freq;
-    g.gain.value = gain;
-    o.connect(g);
-    g.connect(audioCtx.destination);
-    o.start();
-    setTimeout(()=>{ o.stop(); }, duration*1000);
+    o.type = type; o.frequency.value = freq; g.gain.value = gain;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); setTimeout(()=>o.stop(), duration*1000);
   }catch(e){}
 }
-function sfxCoin(){ beep(740, 0.07, "triangle", 0.09); setTimeout(()=>beep(980,0.06,"triangle",0.07), 60); }
-function sfxHit(){ beep(180, 0.12, "sawtooth", 0.10); }
-function sfxWin(){ beep(660,0.09,"sine",0.08); setTimeout(()=>beep(880,0.09,"sine",0.08), 90); setTimeout(()=>beep(990,0.11,"sine",0.08), 180); }
+const sfx = {
+  coin(){ beep(740,0.06,"triangle",0.09); setTimeout(()=>beep(980,0.06,"triangle",0.07), 60); },
+  hit(){ beep(180,0.12,"sawtooth",0.10); },
+  win(){ beep(660,0.09,"sine",0.08); setTimeout(()=>beep(880,0.09,"sine",0.08), 90); setTimeout(()=>beep(990,0.11,"sine",0.08), 180); },
+};
 
-/* =========================
-   ESTADO DO JOGO
-========================= */
-let player = { x: 0, y: 0, size: 26, speed: 10 };
-let score = 0;
-let best = Number(localStorage.getItem("bestScore") || "0");
-let timeLeft = SETTINGS.baseTime;
-let coinsCollected = 0;
-let paused = false;
-let running = false;
+/* ==== ESTADO ==== */
+let player = { x:0, y:0, size:26, speed:10 };
+let enemy = { x:0, y:0, size:24, vx:2.0, vy:1.6 };
 
-let coinEl = null;
-let enemyEl = null;
-let walls = [];
-let enemy = { x: 0, y: 0, size: 24, vx: 2.0, vy: 1.6 };
+let score=0;
+let best=Number(localStorage.getItem("bestScore2")||"0");
+let timeLeft=BASE.time;
+let level=1;
+let lives=BASE.lives;
+let coinsCollected=0;
+let goalCoins=BASE.goalCoins;
 
-let timerId = null;
-let tickId = null;
+let paused=false;
+let running=false;
 
-/* dificuldade */
+let coinEl=null;
+let enemyEl=null;
+let walls=[];
+let timerId=null;
+let tickId=null;
+
+/* ==== DIFICULDADE + FASES ==== */
 function applyDifficulty(diff){
-  // tudo que muda por dificuldade (bem simples)
-  if(diff === "easy"){
-    player.speed = 12;
-    timeLeft = 35;
-    enemy.vx = 1.6; enemy.vy = 1.2;
-  }else if(diff === "hard"){
-    player.speed = 9;
-    timeLeft = 25;
-    enemy.vx = 2.6; enemy.vy = 2.2;
-  }else{
-    player.speed = 10;
-    timeLeft = 30;
-    enemy.vx = 2.1; enemy.vy = 1.7;
-  }
+  if(diff==="easy"){ player.speed=12; enemy.vx=1.6; enemy.vy=1.2; timeLeft=35; }
+  else if(diff==="hard"){ player.speed=9; enemy.vx=2.8; enemy.vy=2.3; timeLeft=25; }
+  else { player.speed=10; enemy.vx=2.2; enemy.vy=1.8; timeLeft=30; }
+}
+function applyLevel(){
+  // aumenta dificuldade conforme fase
+  goalCoins = BASE.goalCoins + (level-1)*3;     // 8, 11, 14...
+  timeLeft = Math.max(16, timeLeft - (level-1)*2);
+  enemy.vx *= 1 + (level-1)*0.08;
+  enemy.vy *= 1 + (level-1)*0.08;
+  goalPreview.textContent = goalCoins;
 }
 
-/* =========================
-   UTILIDADES
-========================= */
-function boardRect(){
-  const r = board.getBoundingClientRect();
-  return { w: r.width, h: r.height };
+/* ==== UTIL ==== */
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+function rectsOverlap(a,b){
+  return (a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y);
 }
-function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
-function rectsOverlap(a, b){
-  return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
-}
-function setPos(el, x, y){
-  el.style.left = x + "px";
-  el.style.top  = y + "px";
-}
+function setPos(el,x,y){ el.style.left=x+"px"; el.style.top=y+"px"; }
+function boardRect(){ const r=board.getBoundingClientRect(); return {w:r.width,h:r.height}; }
 
-/* =========================
-   CRIAR / REMOVER OBJETOS
-========================= */
+/* ==== OBJETOS ==== */
 function clearDynamic(){
-  // remove coin
-  if(coinEl){ coinEl.remove(); coinEl = null; }
-  // remove enemy
-  if(enemyEl){ enemyEl.remove(); enemyEl = null; }
-  // remove walls
-  walls.forEach(w => w.el.remove());
-  walls = [];
+  if(coinEl){ coinEl.remove(); coinEl=null; }
+  if(enemyEl){ enemyEl.remove(); enemyEl=null; }
+  walls.forEach(w=>w.el.remove()); walls=[];
 }
+function collidesWithWalls(r){
+  return walls.some(w => rectsOverlap(r,{x:w.x,y:w.y,w:w.w,h:w.h}));
+}
+function buildWalls(){
+  const {w,h}=boardRect();
+  const list = [
+    { x:w*0.15, y:h*0.18, w:w*0.22, h:h*0.08 },
+    { x:w*0.56, y:h*0.34, w:w*0.24, h:h*0.08 },
+    { x:w*0.32, y:h*0.62, w:w*0.18, h:h*0.10 },
+  ];
+  // em fases mais altas, adiciona mais parede
+  if(level>=3) list.push({ x:w*0.62, y:h*0.70, w:w*0.18, h:h*0.08 });
+  if(level>=5) list.push({ x:w*0.40, y:h*0.42, w:w*0.16, h:h*0.08 });
 
+  list.forEach(item=>{
+    const el=document.createElement("div");
+    el.className="wall";
+    el.style.left=item.x+"px";
+    el.style.top=item.y+"px";
+    el.style.width=item.w+"px";
+    el.style.height=item.h+"px";
+    board.appendChild(el);
+    walls.push({...item,el});
+  });
+}
 function spawnCoin(){
   if(coinEl) coinEl.remove();
-  coinEl = document.createElement("div");
-  coinEl.className = "coin";
+  coinEl=document.createElement("div");
+  coinEl.className="coin";
   board.appendChild(coinEl);
 
-  const { w, h } = boardRect();
-  const pad = 18;
-  let x, y, tries = 0;
-
+  const {w,h}=boardRect();
+  const pad=20;
+  let x,y,tries=0;
   do{
-    x = Math.random()*(w - pad*2) + pad;
-    y = Math.random()*(h - pad*2) + pad;
+    x=Math.random()*(w-pad*2)+pad;
+    y=Math.random()*(h-pad*2)+pad;
     tries++;
-  }while( collidesWithWalls({x, y, w: 20, h: 20}) && tries < 50 );
+  }while(collidesWithWalls({x,y,w:20,h:20}) && tries<60);
 
-  setPos(coinEl, x, y);
+  setPos(coinEl,x,y);
 }
-
 function spawnEnemy(){
   if(enemyEl) enemyEl.remove();
-  enemyEl = document.createElement("div");
-  enemyEl.className = "enemy";
+  enemyEl=document.createElement("div");
+  enemyEl.className="enemy";
   board.appendChild(enemyEl);
 
-  const { w, h } = boardRect();
-  enemy.x = Math.random()*(w-40)+20;
-  enemy.y = Math.random()*(h-40)+20;
-
-  // evita nascer em cima do jogador
-  const dx = enemy.x - player.x;
-  const dy = enemy.y - player.y;
-  if(Math.hypot(dx,dy) < 80){
-    enemy.x = 20; enemy.y = 20;
-  }
+  const {w,h}=boardRect();
+  enemy.x=Math.random()*(w-50)+25;
+  enemy.y=Math.random()*(h-50)+25;
+  // evita nascer em cima
+  if(Math.hypot(enemy.x-player.x, enemy.y-player.y) < 90){ enemy.x=20; enemy.y=20; }
   setPos(enemyEl, enemy.x, enemy.y);
 }
 
-function buildWalls(){
-  // obstáculos fixos (você pode mudar depois)
-  const { w, h } = boardRect();
-  const list = [
-    { x: w*0.18, y: h*0.20, w: w*0.18, h: h*0.08 },
-    { x: w*0.55, y: h*0.35, w: w*0.22, h: h*0.08 },
-    { x: w*0.30, y: h*0.62, w: w*0.16, h: h*0.10 },
-    { x: w*0.62, y: h*0.70, w: w*0.18, h: h*0.08 },
-  ];
-
-  list.forEach(item=>{
-    const el = document.createElement("div");
-    el.className = "wall";
-    el.style.left = item.x + "px";
-    el.style.top  = item.y + "px";
-    el.style.width  = item.w + "px";
-    el.style.height = item.h + "px";
-    board.appendChild(el);
-    walls.push({ ...item, el });
-  });
+/* ==== HUD ==== */
+function heartsText(n){
+  if(n<=0) return "—";
+  return "❤️".repeat(n);
 }
-
-function collidesWithWalls(r){
-  return walls.some(w => rectsOverlap(r, {x:w.x, y:w.y, w:w.w, h:w.h}));
-}
-
-/* =========================
-   ATUALIZAR HUD
-========================= */
 function updateHud(){
-  hudScore.textContent = score;
-  hudBest.textContent = best;
-  hudTime.textContent = timeLeft;
+  hudScore.textContent=score;
+  hudBest.textContent=best;
+  hudTime.textContent=timeLeft;
+  hudLevel.textContent=level;
+  hudLivesText.textContent = heartsText(lives);
 }
 
-/* =========================
-   MOVIMENTO
-========================= */
-function movePlayer(dx, dy){
+/* ==== MOVIMENTO ==== */
+function setPlayerPos(){
+  setPos(playerEl, player.x-player.size/2, player.y-player.size/2);
+}
+function movePlayer(dx,dy){
   if(!running || paused) return;
 
-  const { w, h } = boardRect();
-  let nx = player.x + dx;
-  let ny = player.y + dy;
+  const {w,h}=boardRect();
+  let nx=player.x+dx, ny=player.y+dy;
 
-  // bordas
-  nx = clamp(nx, player.size/2, w - player.size/2);
-  ny = clamp(ny, player.size/2, h - player.size/2);
+  nx=clamp(nx, player.size/2, w-player.size/2);
+  ny=clamp(ny, player.size/2, h-player.size/2);
 
-  // colisão com paredes (tentativa por eixo)
-  const half = player.size/2;
-  const nextRect = { x: nx-half, y: ny-half, w: player.size, h: player.size };
+  const half=player.size/2;
+  const nextRect={x:nx-half,y:ny-half,w:player.size,h:player.size};
 
   if(collidesWithWalls(nextRect)){
-    // tenta só X
-    const rectX = { x: nx-half, y: player.y-half, w: player.size, h: player.size };
-    if(!collidesWithWalls(rectX)) player.x = nx;
+    // tenta eixo separado
+    const rectX={x:nx-half,y:player.y-half,w:player.size,h:player.size};
+    if(!collidesWithWalls(rectX)) player.x=nx;
 
-    // tenta só Y
-    const rectY = { x: player.x-half, y: ny-half, w: player.size, h: player.size };
-    if(!collidesWithWalls(rectY)) player.y = ny;
+    const rectY={x:player.x-half,y:ny-half,w:player.size,h:player.size};
+    if(!collidesWithWalls(rectY)) player.y=ny;
   }else{
-    player.x = nx;
-    player.y = ny;
+    player.x=nx; player.y=ny;
   }
 
-  setPos(playerEl, player.x - half, player.y - half);
+  setPlayerPos();
   checkCoin();
   checkEnemyHit();
 }
 
-/* inimigo anda e rebate */
 function moveEnemy(){
   if(!running || paused) return;
 
-  const { w, h } = boardRect();
+  const {w,h}=boardRect();
+  let nx=enemy.x+enemy.vx;
+  let ny=enemy.y+enemy.vy;
 
-  let nx = enemy.x + enemy.vx;
-  let ny = enemy.y + enemy.vy;
+  if(nx<0 || nx>w-enemy.size){ enemy.vx*=-1; nx=enemy.x+enemy.vx; }
+  if(ny<0 || ny>h-enemy.size){ enemy.vy*=-1; ny=enemy.y+enemy.vy; }
 
-  // rebater nas bordas
-  if(nx < 0 || nx > w - enemy.size){ enemy.vx *= -1; nx = enemy.x + enemy.vx; }
-  if(ny < 0 || ny > h - enemy.size){ enemy.vy *= -1; ny = enemy.y + enemy.vy; }
-
-  // colisão com paredes (rebate)
-  const nextRect = { x:nx, y:ny, w:enemy.size, h:enemy.size };
+  const nextRect={x:nx,y:ny,w:enemy.size,h:enemy.size};
   if(collidesWithWalls(nextRect)){
-    enemy.vx *= -1;
-    enemy.vy *= -1;
-    nx = enemy.x + enemy.vx;
-    ny = enemy.y + enemy.vy;
+    enemy.vx*=-1; enemy.vy*=-1;
+    nx=enemy.x+enemy.vx; ny=enemy.y+enemy.vy;
   }
 
-  enemy.x = nx;
-  enemy.y = ny;
+  enemy.x=nx; enemy.y=ny;
   setPos(enemyEl, enemy.x, enemy.y);
 
   checkEnemyHit();
 }
 
-/* =========================
-   COLISÕES / VITÓRIA / DERROTA
-========================= */
+/* ==== COLISÕES ==== */
 function checkCoin(){
   if(!coinEl) return;
-  const c = coinEl.getBoundingClientRect();
-  const b = board.getBoundingClientRect();
+  const c=coinEl.getBoundingClientRect();
+  const b=board.getBoundingClientRect();
+  const coin={x:c.left-b.left,y:c.top-b.top,w:c.width,h:c.height};
+  const half=player.size/2;
+  const p={x:player.x-half,y:player.y-half,w:player.size,h:player.size};
 
-  const coin = {
-    x: c.left - b.left,
-    y: c.top - b.top,
-    w: c.width,
-    h: c.height
-  };
-
-  const half = player.size/2;
-  const p = { x: player.x-half, y: player.y-half, w: player.size, h: player.size };
-
-  if(rectsOverlap(p, coin)){
-    sfxCoin();
+  if(rectsOverlap(p,coin)){
+    sfx.coin();
     score += 10;
     coinsCollected += 1;
     updateHud();
     spawnCoin();
 
-    if(coinsCollected >= SETTINGS.goalCoins){
-      winGame();
+    if(coinsCollected >= goalCoins){
+      winPhase();
     }
   }
 }
+function loseLife(reason){
+  lives -= 1;
+  updateHud();
+  sfx.hit();
 
+  if(lives <= 0){
+    gameOver(reason);
+    return;
+  }
+
+  // “respawn” (volta para o meio)
+  const {w,h}=boardRect();
+  player.x=w/2; player.y=h/2;
+  setPlayerPos();
+}
 function checkEnemyHit(){
   if(!enemyEl) return;
-  const half = player.size/2;
-  const p = { x: player.x-half, y: player.y-half, w: player.size, h: player.size };
-  const e = { x: enemy.x, y: enemy.y, w: enemy.size, h: enemy.size };
-  if(rectsOverlap(p, e)){
-    sfxHit();
-    gameOver("Você encostou no inimigo 😬");
+  const half=player.size/2;
+  const p={x:player.x-half,y:player.y-half,w:player.size,h:player.size};
+  const e={x:enemy.x,y:enemy.y,w:enemy.size,h:enemy.size};
+  if(rectsOverlap(p,e)){
+    loseLife("Você encostou no inimigo 😬");
   }
 }
 
-function gameOver(reason){
-  stopLoops();
-  running = false;
-
-  if(score > best){
-    best = score;
-    localStorage.setItem("bestScore", String(best));
-  }
-
-  overMsg.textContent = reason;
-  finalScore.textContent = score;
-  finalBest.textContent = best;
-  updateHud();
-  overOverlay.classList.add("show");
-  setControlsDisabled(true);
-}
-
-function winGame(){
-  stopLoops();
-  running = false;
-  sfxWin();
-
-  if(score > best){
-    best = score;
-    localStorage.setItem("bestScore", String(best));
-  }
-
-  winScore.textContent = score;
-  winBest.textContent = best;
-  updateHud();
-  winOverlay.classList.add("show");
-  setControlsDisabled(true);
-}
-
-function tickTime(){
-  if(!running || paused) return;
-  timeLeft -= 1;
-  hudTime.textContent = timeLeft;
-  if(timeLeft <= 0){
-    gameOver("O tempo acabou ⏱️");
-  }
-}
-
-/* =========================
-   LOOP / PAUSA
-========================= */
+/* ==== TIMER / FIM ==== */
 function stopLoops(){
   if(timerId) clearInterval(timerId);
   if(tickId) clearInterval(tickId);
-  timerId = null;
-  tickId = null;
+  timerId=null; tickId=null;
 }
-
+function tickTime(){
+  if(!running || paused) return;
+  timeLeft -= 1;
+  hudTime.textContent=timeLeft;
+  if(timeLeft <= 0){
+    loseLife("O tempo acabou ⏱️");
+    // reseta tempo da fase (se ainda tem vida)
+    if(lives > 0){
+      applyDifficulty(difficultySel.value);
+      applyLevel();
+      updateHud();
+    }
+  }
+}
 function startLoops(){
   stopLoops();
-  timerId = setInterval(tickTime, 1000);
-  // inimigo anda ~40fps
-  tickId = setInterval(moveEnemy, 25);
+  timerId=setInterval(tickTime, 1000);
+  tickId=setInterval(moveEnemy, 25);
 }
 
+/* ==== TELAS ==== */
 function setControlsDisabled(disabled){
   [upBtn,downBtn,leftBtn,rightBtn,restartBtn,pauseBtn,muteBtn].forEach(btn=>{
     btn.classList.toggle("disabled", disabled);
   });
 }
+function show(el){ el.classList.add("show"); }
+function hide(el){ el.classList.remove("show"); }
 
-/* =========================
-   INICIAR / REINICIAR
-========================= */
-function resetGame(keepName=true){
+/* ==== FLUXO: iniciar / reiniciar / vitória / gameover ==== */
+function resetPhase(){
   clearDynamic();
-  paused = false;
-  pauseBtn.textContent = "⏸️ Pausar";
+  paused=false;
+  pauseBtn.textContent="⏸️ Pausar";
 
-  score = 0;
-  coinsCollected = 0;
+  coinsCollected=0;
 
-  // posição inicial do player
-  const { w, h } = boardRect();
-  player.x = w/2;
-  player.y = h/2;
-  setPos(playerEl, player.x - player.size/2, player.y - player.size/2);
+  // posição player
+  const {w,h}=boardRect();
+  player.x=w/2; player.y=h/2;
+  setPlayerPos();
 
-  // obstáculos + itens
   buildWalls();
   spawnCoin();
   spawnEnemy();
-
-  // hud
-  updateHud();
-  goalLabel.textContent = SETTINGS.goalCoins;
-  goalPreview.textContent = SETTINGS.goalCoins;
-
-  if(!keepName){
-    hudName.textContent = "Jogador";
-  }
 }
 
 function startGame(){
-  overOverlay.classList.remove("show");
-  winOverlay.classList.remove("show");
-  startOverlay.classList.remove("show");
+  hide(overOverlay);
+  hide(winOverlay);
+  hide(startOverlay);
 
-  const name = (nameInput.value || "").trim() || "Jogador";
-  hudName.textContent = name;
+  const name = (nameInput.value||"").trim() || "Jogador";
+  hudName.textContent=name;
+
+  // personagem
+  const skin = skinSelect.value;
+  if(skin === "⚫"){ playerEl.textContent=""; playerEl.style.background="#111"; playerEl.style.borderRadius="50%"; }
+  else if(skin === "🟥"){ playerEl.textContent=""; playerEl.style.background="#ff3b30"; playerEl.style.borderRadius="10px"; }
+  else { playerEl.textContent=skin; playerEl.style.background="#111"; playerEl.style.borderRadius="10px"; }
+
+  // reset geral
+  score=0;
+  lives=BASE.lives;
+  level=1;
 
   applyDifficulty(difficultySel.value);
-  resetGame(true);
+  applyLevel();
+  resetPhase();
 
-  running = true;
+  running=true;
   setControlsDisabled(false);
   updateHud();
   startLoops();
 }
 
 function restartNow(){
-  // mantém nome e dificuldade atual
-  overOverlay.classList.remove("show");
-  winOverlay.classList.remove("show");
+  hide(overOverlay);
+  hide(winOverlay);
 
   applyDifficulty(difficultySel.value);
-  resetGame(true);
+  applyLevel();
+  score=0;
+  lives=BASE.lives;
+  level=1;
 
-  running = true;
+  resetPhase();
+  running=true;
   setControlsDisabled(false);
   updateHud();
   startLoops();
 }
 
-/* =========================
-   CONTROLES (BOTÕES + TECLADO)
-========================= */
-function bindHold(btn, dx, dy){
-  let hold = null;
+function winPhase(){
+  stopLoops();
+  running=false;
+  sfx.win();
 
-  const start = (e)=>{
+  if(score > best){
+    best=score;
+    localStorage.setItem("bestScore2", String(best));
+  }
+  updateHud();
+
+  winMsg.textContent = `Você pegou ${goalCoins} moedas!`;
+  winLevel.textContent = level;
+  winScore.textContent = score;
+  winBest.textContent = best;
+  show(winOverlay);
+  setControlsDisabled(true);
+}
+
+function nextLevel(){
+  hide(winOverlay);
+
+  level += 1;
+
+  // fica mais difícil e dá um “bônus” pequeno por fase
+  score += 25;
+  applyDifficulty(difficultySel.value);
+  applyLevel();
+
+  resetPhase();
+  running=true;
+  setControlsDisabled(false);
+  updateHud();
+  startLoops();
+}
+
+function gameOver(reason){
+  stopLoops();
+  running=false;
+
+  if(score > best){
+    best=score;
+    localStorage.setItem("bestScore2", String(best));
+  }
+  updateHud();
+
+  overMsg.textContent = reason;
+  finalScore.textContent = score;
+  finalBest.textContent = best;
+  show(overOverlay);
+  setControlsDisabled(true);
+}
+
+/* ==== CONTROLES ==== */
+function bindHold(btn, dx, dy){
+  let hold=null;
+  const start=(e)=>{
     e.preventDefault();
     movePlayer(dx,dy);
-    hold = setInterval(()=>movePlayer(dx,dy), 70);
+    hold=setInterval(()=>movePlayer(dx,dy), 70);
   };
-  const end = ()=>{
-    if(hold) clearInterval(hold);
-    hold = null;
-  };
+  const end=()=>{ if(hold) clearInterval(hold); hold=null; };
 
   btn.addEventListener("touchstart", start, {passive:false});
   btn.addEventListener("touchend", end);
@@ -858,63 +707,47 @@ function bindHold(btn, dx, dy){
   btn.addEventListener("mouseup", end);
   btn.addEventListener("mouseleave", end);
 }
-
 bindHold(upBtn, 0, -player.speed);
 bindHold(downBtn, 0, player.speed);
 bindHold(leftBtn, -player.speed, 0);
 bindHold(rightBtn, player.speed, 0);
 
 window.addEventListener("keydown", (e)=>{
-  if(e.key === "ArrowUp" || e.key.toLowerCase()==="w") movePlayer(0, -player.speed);
-  if(e.key === "ArrowDown" || e.key.toLowerCase()==="s") movePlayer(0, player.speed);
-  if(e.key === "ArrowLeft" || e.key.toLowerCase()==="a") movePlayer(-player.speed, 0);
-  if(e.key === "ArrowRight" || e.key.toLowerCase()==="d") movePlayer(player.speed, 0);
+  const k=e.key.toLowerCase();
+  if(e.key==="ArrowUp"||k==="w") movePlayer(0, -player.speed);
+  if(e.key==="ArrowDown"||k==="s") movePlayer(0, player.speed);
+  if(e.key==="ArrowLeft"||k==="a") movePlayer(-player.speed, 0);
+  if(e.key==="ArrowRight"||k==="d") movePlayer(player.speed, 0);
 });
 
-/* =========================
-   BOTÕES DE AÇÃO
-========================= */
+/* ==== BOTÕES ==== */
 startBtn.addEventListener("click", startGame);
-
 restartBtn.addEventListener("click", restartNow);
 
 pauseBtn.addEventListener("click", ()=>{
   if(!running) return;
-  paused = !paused;
+  paused=!paused;
   pauseBtn.textContent = paused ? "▶️ Continuar" : "⏸️ Pausar";
 });
 
 muteBtn.addEventListener("click", ()=>{
-  soundOn = !soundOn;
+  soundOn=!soundOn;
   muteBtn.textContent = soundOn ? "🔊 Som" : "🔇 Mudo";
-  muteBtn.classList.toggle("danger", !soundOn);
-  if(soundOn) beep(520, 0.06, "sine", 0.06);
+  if(soundOn) beep(520,0.06,"sine",0.06);
 });
 
 playAgainBtn.addEventListener("click", restartNow);
-nextLevelBtn.addEventListener("click", restartNow);
+nextLevelBtn.addEventListener("click", nextLevel);
 
-backStartBtn.addEventListener("click", ()=>{
-  overOverlay.classList.remove("show");
-  startOverlay.classList.add("show");
-  setControlsDisabled(true);
-});
-winBackBtn.addEventListener("click", ()=>{
-  winOverlay.classList.remove("show");
-  startOverlay.classList.add("show");
-  setControlsDisabled(true);
-});
+backStartBtn.addEventListener("click", ()=>{ hide(overOverlay); show(startOverlay); setControlsDisabled(true); });
+winBackBtn.addEventListener("click", ()=>{ hide(winOverlay); show(startOverlay); setControlsDisabled(true); });
 
-/* =========================
-   PRIMEIRA CARGA
-========================= */
-hudBest.textContent = best;
-goalLabel.textContent = SETTINGS.goalCoins;
-goalPreview.textContent = SETTINGS.goalCoins;
+/* ==== INIT ==== */
+hudBest.textContent=best;
+goalPreview.textContent=BASE.goalCoins;
 setControlsDisabled(true);
-
-// garante que ao abrir, fique na tela inicial
-startOverlay.classList.add("show");
+show(startOverlay);
+updateHud();
 </script>
 </body>
 </html>
