@@ -2,752 +2,499 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jogo de Clecia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Princesa: Make & Dress Party</title>
   <style>
     :root{
-      --bg1:#0f2c5c; --bg2:#2a5aa6;
-      --shadow: 0 10px 30px rgba(0,0,0,.18);
-      --text:#0b1530; --muted:#5b6b86;
-      --accent:#ffcc00; --danger:#ff3b30; --ok:#34c759;
+      --bg1:#ff7bb0; --bg2:#7b61ff;
+      --card: rgba(255,255,255,.18);
+      --border: rgba(255,255,255,.28);
+      --text:#ffffff; --muted: rgba(255,255,255,.85);
+      --shadow: 0 18px 40px rgba(0,0,0,.25);
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      min-height:100vh; background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      color:#fff; display:flex; justify-content:center; padding:18px 10px 30px;
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+      padding:18px;
     }
-    .wrap{width:min(520px, 100%); display:flex; flex-direction:column; gap:14px;}
-    .title{ text-align:center; font-weight:900; font-size: clamp(28px, 6vw, 44px); margin-top:6px; }
-    .subtitle{ text-align:center; margin:0; opacity:.9; font-size:15px; }
-
-    .panel{
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.20);
-      border-radius: 18px; padding:12px; box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
+    .wrap{width:min(920px, 100%); display:flex; flex-direction:column; gap:14px;}
+    .top{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
     }
-    .hud{display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;}
+    h1{margin:0; font-size: 22px; text-align:center;}
+    .sub{margin:6px 0 0; text-align:center; color:var(--muted); font-size:14px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 840px){
+      .grid{grid-template-columns: 1fr; }
+    }
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
     .pill{
-      background: rgba(255,255,255,.14);
-      border:1px solid rgba(255,255,255,.22);
-      border-radius: 999px; padding:8px 12px; font-weight:800;
-      display:flex; gap:8px; align-items:center; min-width: 120px; justify-content:center;
-    }
-    .pill span{font-weight:900; color:var(--accent)}
-
-    .gameCard{
-      background: rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.22);
-      border-radius: 22px; padding: 14px;
-      display:flex; flex-direction:column; gap:12px; align-items:center;
-    }
-    #board{
-      width: min(420px, 92vw); height: min(420px, 92vw);
-      background: rgba(255,255,255,.92);
-      border-radius: 26px; position:relative; overflow:hidden;
-      box-shadow: var(--shadow); touch-action:none; user-select:none;
-    }
-
-    /* personagem (agora pode ser emoji ou cor) */
-    #player{
-      width: 26px; height: 26px;
-      background:#111; border-radius: 10px;
-      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-      display:flex; align-items:center; justify-content:center;
-      font-size: 18px;
-    }
-
-    .coin{
-      width: 20px; height: 20px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fff7b1, #ffcc00 45%, #c98c00 100%);
-      position:absolute; box-shadow: 0 6px 14px rgba(0,0,0,.2);
-      border: 1px solid rgba(0,0,0,.08);
-    }
-    .enemy{
-      width: 24px; height: 24px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffd0cf, #ff3b30 60%, #a60000 100%);
-      position:absolute; box-shadow: 0 8px 16px rgba(0,0,0,.18);
-      border: 1px solid rgba(0,0,0,.08);
-    }
-    .wall{
-      position:absolute; background: rgba(15, 44, 92, .25);
-      border: 1px solid rgba(15, 44, 92, .22);
-      border-radius: 14px; box-shadow: inset 0 2px 0 rgba(255,255,255,.35);
-    }
-
-    .controls{
-      display:grid; grid-template-columns: 70px 70px 70px; grid-template-rows: 70px 70px 70px;
-      gap:12px; justify-content:center; align-items:center; user-select:none;
+      background: rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.26);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 13px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
     .btn{
-      width:70px; height:70px; border-radius: 18px;
-      background: rgba(255,255,255,.90); border:none; box-shadow: var(--shadow);
-      font-size: 28px; font-weight: 900; color: var(--text);
-      display:flex; justify-content:center; align-items:center; cursor:pointer;
+      appearance:none;
+      border:none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.22);
+      color: var(--text);
+      font-weight: 800;
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.25);
     }
-    .btn:active{ transform: translateY(1px) scale(.99); background: rgba(255,255,255,.98); }
-    .btn.disabled{ opacity:.5; pointer-events:none; }
+    .btn:active{transform: scale(.98)}
+    .btn.primary{background: rgba(255,255,255,.32)}
+    .btn.small{padding:8px 10px; border-radius: 12px; font-weight: 700}
+    .sectionTitle{font-weight:900; margin:10px 0 8px; font-size:14px; opacity:.95}
+    .choices{display:flex; gap:8px; flex-wrap:wrap}
+    .choice{
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.14);
+      cursor:pointer;
+      font-size: 13px;
+      font-weight: 800;
+      user-select:none;
+    }
+    .choice.active{background: rgba(255,255,255,.30)}
+    .stage{
+      display:flex; gap:12px; align-items:stretch; justify-content:center; flex-wrap:wrap;
+    }
+    .avatarWrap{
+      width: min(360px, 100%);
+      display:flex; flex-direction:column; gap:10px;
+      align-items:center;
+    }
+    .avatarBox{
+      width: 320px; max-width: 100%;
+      aspect-ratio: 1/1.15;
+      border-radius: 20px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      position: relative;
+      overflow:hidden;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.06);
+    }
+    .hint{font-size: 13px; color: var(--muted); text-align:center}
+    /* Avatar (CSS art simples) */
+    .princess{
+      position:absolute; inset:0;
+      display:flex; justify-content:center; align-items:flex-end;
+      padding-bottom: 10px;
+    }
+    .body{
+      width: 210px;
+      height: 260px;
+      position: relative;
+      display:flex; justify-content:center; align-items:flex-start;
+    }
+    .head{
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: #ffd3c1;
+      position:absolute;
+      top: 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
+    }
+    .eyes{
+      position:absolute; top: 52px; left: 0; right:0;
+      display:flex; justify-content:center; gap:22px;
+    }
+    .eye{
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #2b1b1b;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.55);
+    }
+    .mouth{
+      position:absolute; top: 84px; left:0; right:0;
+      display:flex; justify-content:center;
+    }
+    .lip{
+      width: 30px; height: 14px;
+      border-radius: 0 0 20px 20px;
+      background: var(--lip, #ff4d88);
+      box-shadow: 0 6px 10px rgba(0,0,0,.12);
+    }
+    .blush{
+      position:absolute; top: 72px; left: 18px; right:18px;
+      display:flex; justify-content:space-between;
+      opacity: var(--blushOpacity, .35);
+    }
+    .cheek{
+      width: 26px; height: 14px; border-radius: 50%;
+      background: #ff7aa6;
+      filter: blur(.2px);
+    }
+    .shadowEyes{
+      position:absolute; top: 44px; left:0; right:0;
+      display:flex; justify-content:center; gap:22px;
+      opacity: var(--shadowOpacity, .45);
+    }
+    .shadowDot{
+      width: 24px; height: 10px; border-radius: 999px;
+      background: var(--shadowColor, #7b61ff);
+      filter: blur(.2px);
+    }
+    .hair{
+      position:absolute; top: -6px; left: 50%;
+      transform: translateX(-50%);
+      width: 150px; height: 90px;
+      background: var(--hair, #6b3b2a);
+      border-radius: 80px 80px 60px 60px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.18);
+    }
+    .hair:before, .hair:after{
+      content:"";
+      position:absolute;
+      top: 50px;
+      width: 60px; height: 65px;
+      background: var(--hair, #6b3b2a);
+      border-radius: 0 0 60px 60px;
+    }
+    .hair:before{left: -6px; transform: rotate(8deg)}
+    .hair:after{right:-6px; transform: rotate(-8deg)}
+    .crown{
+      position:absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px; height: 46px;
+      display:flex; justify-content:space-between; align-items:flex-end;
+      opacity: var(--crownOpacity, 1);
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.18));
+    }
+    .crown span{
+      width: 26px; height: 30px;
+      background: var(--crown, #ffd34d);
+      clip-path: polygon(50% 0%, 65% 30%, 100% 30%, 70% 100%, 50% 78%, 30% 100%, 0% 30%, 35% 30%);
+      border-radius: 6px;
+    }
+    .dress{
+      position:absolute;
+      top: 118px;
+      width: 210px; height: 170px;
+      background: var(--dress, #ff4d88);
+      border-radius: 22px 22px 26px 26px;
+      clip-path: polygon(20% 0%, 80% 0%, 95% 25%, 100% 100%, 0% 100%, 5% 25%);
+      box-shadow: 0 18px 25px rgba(0,0,0,.18);
+    }
+    .belt{
+      position:absolute;
+      top: 150px;
+      width: 170px; height: 18px;
+      background: rgba(255,255,255,.22);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .shoes{
+      position:absolute;
+      bottom: 0px;
+      width: 120px; height: 18px;
+      display:flex; justify-content:space-between;
+    }
+    .shoe{
+      width: 46px; height: 16px;
+      background: var(--shoes, #2b1b1b);
+      border-radius: 12px 12px 18px 18px;
+      box-shadow: 0 10px 14px rgba(0,0,0,.18);
+    }
 
-    .row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; margin-top:6px;}
-    .action{
-      border:none; border-radius: 14px; padding: 12px 14px;
-      font-weight:900; cursor:pointer; box-shadow: var(--shadow);
+    /* Festa (tela final) */
+    .party{
+      display:none;
+      text-align:center;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
     }
-    .primary{ background: var(--accent); color:#111; }
-    .danger{ background: var(--danger); color:white; }
-    .ghost{ background: rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.25); }
-    .small{ padding: 10px 12px; font-weight:900; }
-
-    .overlay{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; justify-content:center; align-items:center; padding: 16px; z-index:20;
+    .party h2{margin: 6px 0 4px; font-size: 18px}
+    .friends{
+      margin-top: 10px;
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
     }
-    .overlay.show{ display:flex; }
-    .modal{
-      width:min(520px, 100%); background:white; color: var(--text);
-      border-radius: 18px; padding: 16px; box-shadow: var(--shadow);
+    .friend{
+      width: 86px; height: 110px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25);
+      position:relative;
+      overflow:hidden;
     }
-    .modal h2{ margin: 4px 0 6px; }
-    .modal p{ margin: 0 0 10px; color: var(--muted); }
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      background: #f1f5ff; border:1px solid #dbe6ff;
-      padding: 10px 12px; border-radius: 14px; font-weight:900; margin: 8px 0;
+    .friend .fhead{
+      width: 38px; height: 38px; border-radius: 50%;
+      background:#ffd3c1;
+      position:absolute; top:12px; left:50%;
+      transform:translateX(-50%);
     }
-    .badge b{ color:#0f2c5c; }
-
-    .help{
-      background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.20);
-      border-radius: 16px; padding: 12px;
+    .friend .fdress{
+      width: 70px; height: 58px;
+      position:absolute; bottom:12px; left:50%;
+      transform:translateX(-50%);
+      border-radius: 14px;
+      clip-path: polygon(22% 0%, 78% 0%, 95% 25%, 100% 100%, 0% 100%, 5% 25%);
+      background: var(--fdress, #ff4d88);
     }
-    summary{ cursor:pointer; font-weight:900; margin-bottom:6px; }
-    .help code{ background: rgba(0,0,0,.18); padding:2px 6px; border-radius: 8px; }
-
-    /* barra de vidas */
-    .hearts{ letter-spacing: 2px; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="title">🎮 Jogo da Clecia </div>
-    <p class="subtitle">Fases + Vidas + Personagem + Som (e depois APK!)</p>
-
-    <div class="panel hud">
-      <div class="pill">👤 <span id="hudName">Jogador</span></div>
-      <div class="pill">🧡 Vidas: <span id="hudLivesText">❤️❤️❤️</span></div>
-      <div class="pill">🧩 Fase: <span id="hudLevel">1</span></div>
-      <div class="pill">⭐ Pontos: <span id="hudScore">0</span></div>
-      <div class="pill">🏆 Recorde: <span id="hudBest">0</span></div>
-      <div class="pill">⏱️ Tempo: <span id="hudTime">30</span>s</div>
+    <div class="top">
+      <h1>👑 Princesa: Make & Dress Party</h1>
+      <p class="sub">Escolha o visual da princesa, faça a maquiagem e depois clique em <b>Ir para a Festa</b> ✨</p>
     </div>
 
-    <div class="gameCard">
-      <div id="board">
-        <div id="player">🙂</div>
-      </div>
+    <div class="grid">
+      <div class="card">
+        <div class="stage">
+          <div class="avatarWrap">
+            <div class="avatarBox" id="avatarBox">
+              <div class="princess">
+                <div class="body" id="body">
+                  <div class="head" id="head">
+                    <div class="hair" id="hair"></div>
+                    <div class="crown" id="crown">
+                      <span></span><span></span><span></span>
+                    </div>
 
-      <div class="controls">
-        <div></div>
-        <button class="btn" id="upBtn">⬆️</button>
-        <div></div>
+                    <div class="shadowEyes" id="shadowEyes">
+                      <div class="shadowDot"></div>
+                      <div class="shadowDot"></div>
+                    </div>
 
-        <button class="btn" id="leftBtn">⬅️</button>
-        <div></div>
-        <button class="btn" id="rightBtn">➡️</button>
+                    <div class="eyes">
+                      <div class="eye"></div>
+                      <div class="eye"></div>
+                    </div>
 
-        <div></div>
-        <button class="btn" id="downBtn">⬇️</button>
-        <div></div>
-      </div>
+                    <div class="blush" id="blush">
+                      <div class="cheek"></div>
+                      <div class="cheek"></div>
+                    </div>
 
-      <div class="row">
-        <button class="action primary" id="restartBtn">🔁 Reiniciar</button>
-        <button class="action ghost" id="pauseBtn">⏸️ Pausar</button>
-        <button class="action danger" id="muteBtn">🔊 Som</button>
-      </div>
-    </div>
+                    <div class="mouth">
+                      <div class="lip" id="lip"></div>
+                    </div>
+                  </div>
 
-    <div class="help">
-      <details>
-        <summary>📌 O que cada parte faz (bem simples)</summary>
-        <div>
-          • <b>HTML</b> = as “peças” (tabuleiro, botões, telas).<br/>
-          • <b>CSS</b> = beleza (cores, cantos, sombras).<br/>
-          • <b>JavaScript</b> = regras do jogo (mover, pontos, vidas, fases).<br/>
+                  <div class="dress" id="dress"></div>
+                  <div class="belt" id="belt"></div>
+                  <div class="shoes" id="shoes">
+                    <div class="shoe"></div>
+                    <div class="shoe"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn primary" id="partyBtn">🎉 Ir para a festa</button>
+              <button class="btn" id="resetBtn">↩️ Resetar</button>
+            </div>
+            <div class="hint">Dica: se quiser, dá para trocar as cores e criar “fases” depois 😉</div>
+
+            <div class="party" id="party">
+              <h2>✨ Festa das Princesas ✨</h2>
+              <div id="partyText">Você chegou na festa com um look incrível!</div>
+              <div class="friends" id="friends">
+                <div class="friend" style="--fdress:#ff4d88"><div class="fhead"></div><div class="fdress"></div></div>
+                <div class="friend" style="--fdress:#7b61ff"><div class="fhead"></div><div class="fdress"></div></div>
+                <div class="friend" style="--fdress:#26d0ce"><div class="fhead"></div><div class="fdress"></div></div>
+                <div class="friend" style="--fdress:#ffd34d"><div class="fhead"></div><div class="fdress"></div></div>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </details>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="pill">👧 Princesa: <b id="princessName">Luna</b></div>
+          <div class="pill">💄 Look: <b id="lookName">Rosa</b></div>
+        </div>
+
+        <div class="sectionTitle">Escolha a princesa</div>
+        <div class="choices" id="princessChoices">
+          <div class="choice active" data-princess="Luna">Luna</div>
+          <div class="choice" data-princess="Bella">Bella</div>
+          <div class="choice" data-princess="Sofia">Sofia</div>
+          <div class="choice" data-princess="Maya">Maya</div>
+        </div>
+
+        <div class="sectionTitle">Vestido</div>
+        <div class="choices" id="dressChoices">
+          <div class="choice active" data-dress="#ff4d88">Rosa</div>
+          <div class="choice" data-dress="#7b61ff">Roxo</div>
+          <div class="choice" data-dress="#26d0ce">Turquesa</div>
+          <div class="choice" data-dress="#ffd34d">Dourado</div>
+        </div>
+
+        <div class="sectionTitle">Cabelo</div>
+        <div class="choices" id="hairChoices">
+          <div class="choice active" data-hair="#6b3b2a">Castanho</div>
+          <div class="choice" data-hair="#2b1b1b">Preto</div>
+          <div class="choice" data-hair="#f2c14e">Loiro</div>
+          <div class="choice" data-hair="#d03b78">Rosa</div>
+        </div>
+
+        <div class="sectionTitle">Coroa</div>
+        <div class="choices" id="crownChoices">
+          <div class="choice active" data-crown="#ffd34d" data-crownOpacity="1">Dourada</div>
+          <div class="choice" data-crown="#ffffff" data-crownOpacity="1">Branca</div>
+          <div class="choice" data-crown="#7b61ff" data-crownOpacity="1">Roxa</div>
+          <div class="choice" data-crown="#ffd34d" data-crownOpacity="0">Sem coroa</div>
+        </div>
+
+        <div class="sectionTitle">Maquiagem (batom + sombra)</div>
+        <div class="choices" id="makeChoices">
+          <div class="choice active" data-lip="#ff4d88" data-shadow="#7b61ff">Glam</div>
+          <div class="choice" data-lip="#ff3b3b" data-shadow="#ffd34d">Festa</div>
+          <div class="choice" data-lip="#7b61ff" data-shadow="#26d0ce">Neon</div>
+          <div class="choice" data-lip="#b84a62" data-shadow="#ffffff">Suave</div>
+        </div>
+
+        <div class="sectionTitle">Acessórios</div>
+        <div class="choices" id="shoeChoices">
+          <div class="choice active" data-shoes="#2b1b1b">Sapato preto</div>
+          <div class="choice" data-shoes="#ffffff">Sapato branco</div>
+          <div class="choice" data-shoes="#ffd34d">Sapato dourado</div>
+          <div class="choice" data-shoes="#7b61ff">Sapato roxo</div>
+        </div>
+
+        <div class="sectionTitle">Bônus (bochecha)</div>
+        <div class="choices" id="blushChoices">
+          <div class="choice active" data-blush="0.35">Com blush</div>
+          <div class="choice" data-blush="0">Sem blush</div>
+        </div>
+
+      </div>
     </div>
   </div>
 
-  <!-- Tela Inicial -->
-  <div class="overlay show" id="startOverlay">
-    <div class="modal">
-      <h2>Começar</h2>
-      <p>Escolha o nome, o personagem e a dificuldade.</p>
+  <script>
+    const $ = (id) => document.getElementById(id);
 
-      <div class="row" style="gap:12px; flex-direction:column; align-items:stretch;">
-        <div>
-          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Seu nome</div>
-          <input id="nameInput" maxlength="18" placeholder="Ex: Clecia" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
-        </div>
+    const state = {
+      princess: "Luna",
+      dress: "#ff4d88",
+      hair: "#6b3b2a",
+      crown: "#ffd34d",
+      crownOpacity: 1,
+      lip: "#ff4d88",
+      shadow: "#7b61ff",
+      blush: 0.35,
+      shoes: "#2b1b1b",
+      look: "Rosa"
+    };
 
-        <div>
-          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Personagem</div>
-          <select id="skinSelect" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
-            <option value="🙂">🙂 Smile</option>
-            <option value="😎">😎 Cool</option>
-            <option value="👾">👾 Alien</option>
-            <option value="🐱">🐱 Gatinho</option>
-            <option value="🦄">🦄 Unicórnio</option>
-            <option value="⚫">⚫ Bola preta</option>
-            <option value="🟥">🟥 Quadrado vermelho</option>
-          </select>
-        </div>
+    function apply(){
+      document.documentElement.style.setProperty("--dress", state.dress);
+      document.documentElement.style.setProperty("--hair", state.hair);
+      document.documentElement.style.setProperty("--crown", state.crown);
+      document.documentElement.style.setProperty("--crownOpacity", state.crownOpacity);
+      document.documentElement.style.setProperty("--lip", state.lip);
+      document.documentElement.style.setProperty("--shadowColor", state.shadow);
+      document.documentElement.style.setProperty("--blushOpacity", state.blush);
+      document.documentElement.style.setProperty("--shoes", state.shoes);
 
-        <div>
-          <div style="font-weight:900;color:#0f2c5c;margin-bottom:6px;">Dificuldade</div>
-          <select id="difficulty" style="width:100%;padding:12px;border-radius:12px;border:1px solid #d8dbe6;font-weight:800;font-size:16px;">
-            <option value="easy">Fácil</option>
-            <option value="normal" selected>Normal</option>
-            <option value="hard">Difícil</option>
-          </select>
-        </div>
-
-        <div class="badge">🎯 Objetivo por fase: <b><span id="goalPreview">8</span> moedas</b></div>
-
-        <button class="action primary" id="startBtn">▶️ Jogar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Game Over -->
-  <div class="overlay" id="overOverlay">
-    <div class="modal">
-      <h2>💥 Game Over</h2>
-      <p id="overMsg">Você perdeu!</p>
-      <div class="badge">⭐ Pontos: <b id="finalScore">0</b></div>
-      <div class="badge">🏆 Recorde: <b id="finalBest">0</b></div>
-      <div class="row">
-        <button class="action primary" id="playAgainBtn">🔁 Jogar de novo</button>
-        <button class="action ghost" id="backStartBtn">🏠 Voltar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vitória -->
-  <div class="overlay" id="winOverlay">
-    <div class="modal">
-      <h2>🎉 Você venceu a fase!</h2>
-      <p id="winMsg">Boa!</p>
-      <div class="badge">🧩 Fase: <b id="winLevel">1</b></div>
-      <div class="badge">⭐ Pontos: <b id="winScore">0</b></div>
-      <div class="badge">🏆 Recorde: <b id="winBest">0</b></div>
-      <div class="row">
-        <button class="action primary" id="nextLevelBtn">➡️ Próxima fase</button>
-        <button class="action ghost" id="winBackBtn">🏠 Voltar</button>
-      </div>
-    </div>
-  </div>
-
-<script>
-/* ==== CONFIG ==== */
-const BASE = { time: 30, goalCoins: 8, lives: 3 };
-let soundOn = true;
-
-/* ==== ELEMENTOS ==== */
-const board = document.getElementById("board");
-const playerEl = document.getElementById("player");
-
-const hudName = document.getElementById("hudName");
-const hudLivesText = document.getElementById("hudLivesText");
-const hudLevel = document.getElementById("hudLevel");
-const hudScore = document.getElementById("hudScore");
-const hudBest = document.getElementById("hudBest");
-const hudTime = document.getElementById("hudTime");
-
-const startOverlay = document.getElementById("startOverlay");
-const overOverlay = document.getElementById("overOverlay");
-const winOverlay = document.getElementById("winOverlay");
-
-const nameInput = document.getElementById("nameInput");
-const skinSelect = document.getElementById("skinSelect");
-const difficultySel = document.getElementById("difficulty");
-const goalPreview = document.getElementById("goalPreview");
-
-const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
-const pauseBtn = document.getElementById("pauseBtn");
-const muteBtn = document.getElementById("muteBtn");
-
-const upBtn = document.getElementById("upBtn");
-const downBtn = document.getElementById("downBtn");
-const leftBtn = document.getElementById("leftBtn");
-const rightBtn = document.getElementById("rightBtn");
-
-const overMsg = document.getElementById("overMsg");
-const finalScore = document.getElementById("finalScore");
-const finalBest = document.getElementById("finalBest");
-const playAgainBtn = document.getElementById("playAgainBtn");
-const backStartBtn = document.getElementById("backStartBtn");
-
-const winMsg = document.getElementById("winMsg");
-const winLevel = document.getElementById("winLevel");
-const winScore = document.getElementById("winScore");
-const winBest = document.getElementById("winBest");
-const nextLevelBtn = document.getElementById("nextLevelBtn");
-const winBackBtn = document.getElementById("winBackBtn");
-
-/* ==== ÁUDIO (sem arquivos) ==== */
-let audioCtx=null;
-function beep(freq=440, duration=0.08, type="sine", gain=0.08){
-  if(!soundOn) return;
-  try{
-    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq; g.gain.value = gain;
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); setTimeout(()=>o.stop(), duration*1000);
-  }catch(e){}
-}
-const sfx = {
-  coin(){ beep(740,0.06,"triangle",0.09); setTimeout(()=>beep(980,0.06,"triangle",0.07), 60); },
-  hit(){ beep(180,0.12,"sawtooth",0.10); },
-  win(){ beep(660,0.09,"sine",0.08); setTimeout(()=>beep(880,0.09,"sine",0.08), 90); setTimeout(()=>beep(990,0.11,"sine",0.08), 180); },
-};
-
-/* ==== ESTADO ==== */
-let player = { x:0, y:0, size:26, speed:10 };
-let enemy = { x:0, y:0, size:24, vx:2.0, vy:1.6 };
-
-let score=0;
-let best=Number(localStorage.getItem("bestScore2")||"0");
-let timeLeft=BASE.time;
-let level=1;
-let lives=BASE.lives;
-let coinsCollected=0;
-let goalCoins=BASE.goalCoins;
-
-let paused=false;
-let running=false;
-
-let coinEl=null;
-let enemyEl=null;
-let walls=[];
-let timerId=null;
-let tickId=null;
-
-/* ==== DIFICULDADE + FASES ==== */
-function applyDifficulty(diff){
-  if(diff==="easy"){ player.speed=12; enemy.vx=1.6; enemy.vy=1.2; timeLeft=35; }
-  else if(diff==="hard"){ player.speed=9; enemy.vx=2.8; enemy.vy=2.3; timeLeft=25; }
-  else { player.speed=10; enemy.vx=2.2; enemy.vy=1.8; timeLeft=30; }
-}
-function applyLevel(){
-  // aumenta dificuldade conforme fase
-  goalCoins = BASE.goalCoins + (level-1)*3;     // 8, 11, 14...
-  timeLeft = Math.max(16, timeLeft - (level-1)*2);
-  enemy.vx *= 1 + (level-1)*0.08;
-  enemy.vy *= 1 + (level-1)*0.08;
-  goalPreview.textContent = goalCoins;
-}
-
-/* ==== UTIL ==== */
-function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
-function rectsOverlap(a,b){
-  return (a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y);
-}
-function setPos(el,x,y){ el.style.left=x+"px"; el.style.top=y+"px"; }
-function boardRect(){ const r=board.getBoundingClientRect(); return {w:r.width,h:r.height}; }
-
-/* ==== OBJETOS ==== */
-function clearDynamic(){
-  if(coinEl){ coinEl.remove(); coinEl=null; }
-  if(enemyEl){ enemyEl.remove(); enemyEl=null; }
-  walls.forEach(w=>w.el.remove()); walls=[];
-}
-function collidesWithWalls(r){
-  return walls.some(w => rectsOverlap(r,{x:w.x,y:w.y,w:w.w,h:w.h}));
-}
-function buildWalls(){
-  const {w,h}=boardRect();
-  const list = [
-    { x:w*0.15, y:h*0.18, w:w*0.22, h:h*0.08 },
-    { x:w*0.56, y:h*0.34, w:w*0.24, h:h*0.08 },
-    { x:w*0.32, y:h*0.62, w:w*0.18, h:h*0.10 },
-  ];
-  // em fases mais altas, adiciona mais parede
-  if(level>=3) list.push({ x:w*0.62, y:h*0.70, w:w*0.18, h:h*0.08 });
-  if(level>=5) list.push({ x:w*0.40, y:h*0.42, w:w*0.16, h:h*0.08 });
-
-  list.forEach(item=>{
-    const el=document.createElement("div");
-    el.className="wall";
-    el.style.left=item.x+"px";
-    el.style.top=item.y+"px";
-    el.style.width=item.w+"px";
-    el.style.height=item.h+"px";
-    board.appendChild(el);
-    walls.push({...item,el});
-  });
-}
-function spawnCoin(){
-  if(coinEl) coinEl.remove();
-  coinEl=document.createElement("div");
-  coinEl.className="coin";
-  board.appendChild(coinEl);
-
-  const {w,h}=boardRect();
-  const pad=20;
-  let x,y,tries=0;
-  do{
-    x=Math.random()*(w-pad*2)+pad;
-    y=Math.random()*(h-pad*2)+pad;
-    tries++;
-  }while(collidesWithWalls({x,y,w:20,h:20}) && tries<60);
-
-  setPos(coinEl,x,y);
-}
-function spawnEnemy(){
-  if(enemyEl) enemyEl.remove();
-  enemyEl=document.createElement("div");
-  enemyEl.className="enemy";
-  board.appendChild(enemyEl);
-
-  const {w,h}=boardRect();
-  enemy.x=Math.random()*(w-50)+25;
-  enemy.y=Math.random()*(h-50)+25;
-  // evita nascer em cima
-  if(Math.hypot(enemy.x-player.x, enemy.y-player.y) < 90){ enemy.x=20; enemy.y=20; }
-  setPos(enemyEl, enemy.x, enemy.y);
-}
-
-/* ==== HUD ==== */
-function heartsText(n){
-  if(n<=0) return "—";
-  return "❤️".repeat(n);
-}
-function updateHud(){
-  hudScore.textContent=score;
-  hudBest.textContent=best;
-  hudTime.textContent=timeLeft;
-  hudLevel.textContent=level;
-  hudLivesText.textContent = heartsText(lives);
-}
-
-/* ==== MOVIMENTO ==== */
-function setPlayerPos(){
-  setPos(playerEl, player.x-player.size/2, player.y-player.size/2);
-}
-function movePlayer(dx,dy){
-  if(!running || paused) return;
-
-  const {w,h}=boardRect();
-  let nx=player.x+dx, ny=player.y+dy;
-
-  nx=clamp(nx, player.size/2, w-player.size/2);
-  ny=clamp(ny, player.size/2, h-player.size/2);
-
-  const half=player.size/2;
-  const nextRect={x:nx-half,y:ny-half,w:player.size,h:player.size};
-
-  if(collidesWithWalls(nextRect)){
-    // tenta eixo separado
-    const rectX={x:nx-half,y:player.y-half,w:player.size,h:player.size};
-    if(!collidesWithWalls(rectX)) player.x=nx;
-
-    const rectY={x:player.x-half,y:ny-half,w:player.size,h:player.size};
-    if(!collidesWithWalls(rectY)) player.y=ny;
-  }else{
-    player.x=nx; player.y=ny;
-  }
-
-  setPlayerPos();
-  checkCoin();
-  checkEnemyHit();
-}
-
-function moveEnemy(){
-  if(!running || paused) return;
-
-  const {w,h}=boardRect();
-  let nx=enemy.x+enemy.vx;
-  let ny=enemy.y+enemy.vy;
-
-  if(nx<0 || nx>w-enemy.size){ enemy.vx*=-1; nx=enemy.x+enemy.vx; }
-  if(ny<0 || ny>h-enemy.size){ enemy.vy*=-1; ny=enemy.y+enemy.vy; }
-
-  const nextRect={x:nx,y:ny,w:enemy.size,h:enemy.size};
-  if(collidesWithWalls(nextRect)){
-    enemy.vx*=-1; enemy.vy*=-1;
-    nx=enemy.x+enemy.vx; ny=enemy.y+enemy.vy;
-  }
-
-  enemy.x=nx; enemy.y=ny;
-  setPos(enemyEl, enemy.x, enemy.y);
-
-  checkEnemyHit();
-}
-
-/* ==== COLISÕES ==== */
-function checkCoin(){
-  if(!coinEl) return;
-  const c=coinEl.getBoundingClientRect();
-  const b=board.getBoundingClientRect();
-  const coin={x:c.left-b.left,y:c.top-b.top,w:c.width,h:c.height};
-  const half=player.size/2;
-  const p={x:player.x-half,y:player.y-half,w:player.size,h:player.size};
-
-  if(rectsOverlap(p,coin)){
-    sfx.coin();
-    score += 10;
-    coinsCollected += 1;
-    updateHud();
-    spawnCoin();
-
-    if(coinsCollected >= goalCoins){
-      winPhase();
+      $("princessName").textContent = state.princess;
+      $("lookName").textContent = state.look;
     }
-  }
-}
-function loseLife(reason){
-  lives -= 1;
-  updateHud();
-  sfx.hit();
 
-  if(lives <= 0){
-    gameOver(reason);
-    return;
-  }
-
-  // “respawn” (volta para o meio)
-  const {w,h}=boardRect();
-  player.x=w/2; player.y=h/2;
-  setPlayerPos();
-}
-function checkEnemyHit(){
-  if(!enemyEl) return;
-  const half=player.size/2;
-  const p={x:player.x-half,y:player.y-half,w:player.size,h:player.size};
-  const e={x:enemy.x,y:enemy.y,w:enemy.size,h:enemy.size};
-  if(rectsOverlap(p,e)){
-    loseLife("Você encostou no inimigo 😬");
-  }
-}
-
-/* ==== TIMER / FIM ==== */
-function stopLoops(){
-  if(timerId) clearInterval(timerId);
-  if(tickId) clearInterval(tickId);
-  timerId=null; tickId=null;
-}
-function tickTime(){
-  if(!running || paused) return;
-  timeLeft -= 1;
-  hudTime.textContent=timeLeft;
-  if(timeLeft <= 0){
-    loseLife("O tempo acabou ⏱️");
-    // reseta tempo da fase (se ainda tem vida)
-    if(lives > 0){
-      applyDifficulty(difficultySel.value);
-      applyLevel();
-      updateHud();
+    function setActive(containerId, el){
+      const box = $(containerId);
+      [...box.querySelectorAll(".choice")].forEach(c => c.classList.remove("active"));
+      el.classList.add("active");
     }
-  }
-}
-function startLoops(){
-  stopLoops();
-  timerId=setInterval(tickTime, 1000);
-  tickId=setInterval(moveEnemy, 25);
-}
 
-/* ==== TELAS ==== */
-function setControlsDisabled(disabled){
-  [upBtn,downBtn,leftBtn,rightBtn,restartBtn,pauseBtn,muteBtn].forEach(btn=>{
-    btn.classList.toggle("disabled", disabled);
-  });
-}
-function show(el){ el.classList.add("show"); }
-function hide(el){ el.classList.remove("show"); }
+    function hookChoices(containerId, handler){
+      const box = $(containerId);
+      box.addEventListener("click", (e) => {
+        const el = e.target.closest(".choice");
+        if(!el) return;
+        setActive(containerId, el);
+        handler(el);
+        apply();
+      });
+    }
 
-/* ==== FLUXO: iniciar / reiniciar / vitória / gameover ==== */
-function resetPhase(){
-  clearDynamic();
-  paused=false;
-  pauseBtn.textContent="⏸️ Pausar";
+    hookChoices("princessChoices", (el)=>{
+      state.princess = el.dataset.princess;
+    });
 
-  coinsCollected=0;
+    hookChoices("dressChoices", (el)=>{
+      state.dress = el.dataset.dress;
+      const name = el.textContent.trim();
+      state.look = name;
+    });
 
-  // posição player
-  const {w,h}=boardRect();
-  player.x=w/2; player.y=h/2;
-  setPlayerPos();
+    hookChoices("hairChoices", (el)=>{
+      state.hair = el.dataset.hair;
+    });
 
-  buildWalls();
-  spawnCoin();
-  spawnEnemy();
-}
+    hookChoices("crownChoices", (el)=>{
+      state.crown = el.dataset.crown;
+      state.crownOpacity = Number(el.dataset.crownOpacity ?? 1);
+    });
 
-function startGame(){
-  hide(overOverlay);
-  hide(winOverlay);
-  hide(startOverlay);
+    hookChoices("makeChoices", (el)=>{
+      state.lip = el.dataset.lip;
+      state.shadow = el.dataset.shadow;
+    });
 
-  const name = (nameInput.value||"").trim() || "Jogador";
-  hudName.textContent=name;
+    hookChoices("shoeChoices", (el)=>{
+      state.shoes = el.dataset.shoes;
+    });
 
-  // personagem
-  const skin = skinSelect.value;
-  if(skin === "⚫"){ playerEl.textContent=""; playerEl.style.background="#111"; playerEl.style.borderRadius="50%"; }
-  else if(skin === "🟥"){ playerEl.textContent=""; playerEl.style.background="#ff3b30"; playerEl.style.borderRadius="10px"; }
-  else { playerEl.textContent=skin; playerEl.style.background="#111"; playerEl.style.borderRadius="10px"; }
+    hookChoices("blushChoices", (el)=>{
+      state.blush = Number(el.dataset.blush);
+    });
 
-  // reset geral
-  score=0;
-  lives=BASE.lives;
-  level=1;
+    $("partyBtn").addEventListener("click", ()=>{
+      $("party").style.display = "block";
+      $("partyText").textContent =
+        `${state.princess} chegou na festa com vestido ${state.look} e um look perfeito! ✨`;
+      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
+    });
 
-  applyDifficulty(difficultySel.value);
-  applyLevel();
-  resetPhase();
+    $("resetBtn").addEventListener("click", ()=>{
+      location.reload();
+    });
 
-  running=true;
-  setControlsDisabled(false);
-  updateHud();
-  startLoops();
-}
-
-function restartNow(){
-  hide(overOverlay);
-  hide(winOverlay);
-
-  applyDifficulty(difficultySel.value);
-  applyLevel();
-  score=0;
-  lives=BASE.lives;
-  level=1;
-
-  resetPhase();
-  running=true;
-  setControlsDisabled(false);
-  updateHud();
-  startLoops();
-}
-
-function winPhase(){
-  stopLoops();
-  running=false;
-  sfx.win();
-
-  if(score > best){
-    best=score;
-    localStorage.setItem("bestScore2", String(best));
-  }
-  updateHud();
-
-  winMsg.textContent = `Você pegou ${goalCoins} moedas!`;
-  winLevel.textContent = level;
-  winScore.textContent = score;
-  winBest.textContent = best;
-  show(winOverlay);
-  setControlsDisabled(true);
-}
-
-function nextLevel(){
-  hide(winOverlay);
-
-  level += 1;
-
-  // fica mais difícil e dá um “bônus” pequeno por fase
-  score += 25;
-  applyDifficulty(difficultySel.value);
-  applyLevel();
-
-  resetPhase();
-  running=true;
-  setControlsDisabled(false);
-  updateHud();
-  startLoops();
-}
-
-function gameOver(reason){
-  stopLoops();
-  running=false;
-
-  if(score > best){
-    best=score;
-    localStorage.setItem("bestScore2", String(best));
-  }
-  updateHud();
-
-  overMsg.textContent = reason;
-  finalScore.textContent = score;
-  finalBest.textContent = best;
-  show(overOverlay);
-  setControlsDisabled(true);
-}
-
-/* ==== CONTROLES ==== */
-function bindHold(btn, dx, dy){
-  let hold=null;
-  const start=(e)=>{
-    e.preventDefault();
-    movePlayer(dx,dy);
-    hold=setInterval(()=>movePlayer(dx,dy), 70);
-  };
-  const end=()=>{ if(hold) clearInterval(hold); hold=null; };
-
-  btn.addEventListener("touchstart", start, {passive:false});
-  btn.addEventListener("touchend", end);
-  btn.addEventListener("touchcancel", end);
-
-  btn.addEventListener("mousedown", start);
-  btn.addEventListener("mouseup", end);
-  btn.addEventListener("mouseleave", end);
-}
-bindHold(upBtn, 0, -player.speed);
-bindHold(downBtn, 0, player.speed);
-bindHold(leftBtn, -player.speed, 0);
-bindHold(rightBtn, player.speed, 0);
-
-window.addEventListener("keydown", (e)=>{
-  const k=e.key.toLowerCase();
-  if(e.key==="ArrowUp"||k==="w") movePlayer(0, -player.speed);
-  if(e.key==="ArrowDown"||k==="s") movePlayer(0, player.speed);
-  if(e.key==="ArrowLeft"||k==="a") movePlayer(-player.speed, 0);
-  if(e.key==="ArrowRight"||k==="d") movePlayer(player.speed, 0);
-});
-
-/* ==== BOTÕES ==== */
-startBtn.addEventListener("click", startGame);
-restartBtn.addEventListener("click", restartNow);
-
-pauseBtn.addEventListener("click", ()=>{
-  if(!running) return;
-  paused=!paused;
-  pauseBtn.textContent = paused ? "▶️ Continuar" : "⏸️ Pausar";
-});
-
-muteBtn.addEventListener("click", ()=>{
-  soundOn=!soundOn;
-  muteBtn.textContent = soundOn ? "🔊 Som" : "🔇 Mudo";
-  if(soundOn) beep(520,0.06,"sine",0.06);
-});
-
-playAgainBtn.addEventListener("click", restartNow);
-nextLevelBtn.addEventListener("click", nextLevel);
-
-backStartBtn.addEventListener("click", ()=>{ hide(overOverlay); show(startOverlay); setControlsDisabled(true); });
-winBackBtn.addEventListener("click", ()=>{ hide(winOverlay); show(startOverlay); setControlsDisabled(true); });
-
-/* ==== INIT ==== */
-hudBest.textContent=best;
-goalPreview.textContent=BASE.goalCoins;
-setControlsDisabled(true);
-show(startOverlay);
-updateHud();
-</script>
+    apply();
+  </script>
 </body>
 </html>
