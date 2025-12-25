@@ -1,334 +1,920 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Meu Primeiro Jogo</title>
   <style>
-    :root {
-      --bg: #214a8a;
-      --card: #ffffff;
-      --shadow: 0 12px 30px rgba(0,0,0,.18);
+    :root{
+      --bg1:#0f2c5c;
+      --bg2:#2a5aa6;
+      --card:#ffffff;
+      --shadow: 0 10px 30px rgba(0,0,0,.18);
+      --text:#0b1530;
+      --muted:#5b6b86;
+      --accent:#ffcc00;
+      --danger:#ff3b30;
+      --ok:#34c759;
     }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: var(--bg);
-      color: #fff;
-      padding: 18px 14px 30px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      color: white;
+      display:flex;
+      justify-content:center;
+      padding:18px 10px 30px;
     }
-
-    h1 { margin: 12px 0 8px; font-size: 44px; }
-    p { margin: 6px 0; opacity: .95; }
-
-    .hud {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 10px 0 14px;
+    .wrap{
+      width:min(520px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
     }
-    .pill {
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.25);
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      min-width: 120px;
+    .title{
+      text-align:center;
+      font-weight:800;
+      font-size: clamp(28px, 6vw, 44px);
+      line-height:1.05;
+      margin-top:6px;
+      text-shadow: 0 6px 16px rgba(0,0,0,.2);
     }
-
-    .board {
-      width: 320px;
-      height: 320px;
-      background: #f3f3f3;
-      border-radius: 26px;
-      margin: 16px auto 14px;
-      position: relative;
+    .subtitle{
+      text-align:center;
+      margin:0;
+      opacity:.9;
+      font-size: 15px;
+    }
+    .panel{
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.20);
+      border-radius: 18px;
+      padding:12px;
       box-shadow: var(--shadow);
-      overflow: hidden;
-      touch-action: none;
-      user-select: none;
+      backdrop-filter: blur(6px);
+    }
+    .hud{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .pill{
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      padding:8px 12px;
+      font-weight:700;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      min-width: 120px;
+      justify-content:center;
+    }
+    .pill span{
+      font-weight:800;
+      color: var(--accent);
     }
 
-    .player {
-      width: 28px;
-      height: 28px;
+    .gameCard{
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22);
+      border-radius: 22px;
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+    }
+    #board{
+      width: min(420px, 92vw);
+      height: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      border-radius: 26px;
+      position:relative;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+      touch-action: none; /* ajuda no celular */
+    }
+
+    /* jogador */
+    #player{
+      width: 26px;
+      height: 26px;
       background: #111;
       border-radius: 8px;
-      position: absolute;
-      left: 146px;
-      top: 146px;
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
     }
 
-    .coin {
-      width: 18px;
-      height: 18px;
-      background: #ffcc00;
+    /* moeda */
+    .coin{
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      position: absolute;
-      box-shadow: 0 6px 16px rgba(0,0,0,.18);
+      background: radial-gradient(circle at 30% 30%, #fff7b1, #ffcc00 45%, #c98c00 100%);
+      position:absolute;
+      box-shadow: 0 6px 14px rgba(0,0,0,.2);
+      border: 1px solid rgba(0,0,0,.08);
     }
 
-    .controls {
-      display: grid;
-      grid-template-columns: 90px 90px 90px;
-      grid-template-rows: 90px 90px 90px;
-      gap: 12px;
-      justify-content: center;
-      margin: 14px auto 0;
-      width: fit-content;
+    /* inimigo */
+    .enemy{
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd0cf, #ff3b30 60%, #a60000 100%);
+      position:absolute;
+      box-shadow: 0 8px 16px rgba(0,0,0,.18);
+      border: 1px solid rgba(0,0,0,.08);
     }
 
-    .btn {
-      background: rgba(255,255,255,.92);
-      border: none;
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      font-size: 34px;
-      cursor: pointer;
-    }
-    .btn:active { transform: scale(.98); }
-
-    .btn.up { grid-column: 2; grid-row: 1; }
-    .btn.left { grid-column: 1; grid-row: 2; }
-    .btn.right { grid-column: 3; grid-row: 2; }
-    .btn.down { grid-column: 2; grid-row: 3; }
-
-    /* Telas (start/gameover) */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,.45);
-      padding: 18px;
-    }
-
-    .modal {
-      width: min(420px, 92vw);
-      background: var(--card);
-      color: #111;
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      padding: 18px 16px;
-      text-align: center;
-    }
-
-    .modal h2 { margin: 6px 0 8px; }
-    .modal p { margin: 8px 0; color: #333; }
-
-    .action {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border: none;
+    /* obstáculos */
+    .wall{
+      position:absolute;
+      background: rgba(15, 44, 92, .25);
+      border: 1px solid rgba(15, 44, 92, .22);
       border-radius: 14px;
-      background: #214a8a;
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-      width: 100%;
-      cursor: pointer;
+      box-shadow: inset 0 2px 0 rgba(255,255,255,.35);
     }
-    .action:active { transform: scale(.99); }
 
-    .hint {
-      font-size: 12px;
-      color: #444;
-      margin-top: 10px;
+    .controls{
+      display:grid;
+      grid-template-columns: 70px 70px 70px;
+      grid-template-rows: 70px 70px 70px;
+      gap:12px;
+      justify-content:center;
+      align-items:center;
+      user-select:none;
     }
+    .btn{
+      width:70px;
+      height:70px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.90);
+      border: none;
+      box-shadow: var(--shadow);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+    }
+    .btn:active{
+      transform: translateY(1px) scale(.99);
+      background: rgba(255,255,255,.98);
+    }
+    .btn.disabled{
+      opacity:.5;
+      pointer-events:none;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+      margin-top:6px;
+    }
+    .action{
+      border:none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow: var(--shadow);
+    }
+    .primary{ background: var(--accent); color:#111; }
+    .danger{ background: var(--danger); color:white; }
+    .ghost{ background: rgba(255,255,255,.12); color:white; border:1px solid rgba(255,255,255,.25); }
+    .small{ padding: 10px 12px; font-weight:800; }
+
+    /* telas (modais) */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      padding: 16px;
+      z-index: 20;
+    }
+    .overlay.show{ display:flex; }
+    .modal{
+      width:min(520px, 100%);
+      background: white;
+      color: var(--text);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .modal h2{ margin: 4px 0 6px; }
+    .modal p{ margin: 0 0 10px; color: var(--muted); }
+    .modal .row{ margin-top: 10px; }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      background: #f1f5ff;
+      border:1px solid #dbe6ff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-weight:800;
+      margin: 8px 0;
+    }
+    .badge b{ color: #0f2c5c; }
+
+    /* ajuda */
+    details{
+      color:white;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .help{
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.20);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .help code{ background: rgba(0,0,0,.18); padding:2px 6px; border-radius: 8px; }
+
+    /* tela inicial */
+    .startCard{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:stretch;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    input, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border:1px solid #d8dbe6;
+      font-weight:700;
+      font-size: 16px;
+      outline:none;
+    }
+    label{ font-weight:800; color:#0f2c5c; }
   </style>
 </head>
+
 <body>
-  <h1>🎮 Meu Primeiro Jogo</h1>
-  <p>Pegue as moedas antes do tempo acabar!</p>
+  <div class="wrap">
+    <div class="title">🎮 Meu Primeiro Jogo</div>
+    <p class="subtitle">Pegue as moedas, desvie do inimigo e faça o maior recorde!</p>
 
-  <div class="hud">
-    <div class="pill">⭐ Pontos: <span id="score">0</span></div>
-    <div class="pill">⏱ Tempo: <span id="time">20</span>s</div>
-    <div class="pill">🔥 Melhor: <span id="best">0</span></div>
+    <div class="panel hud">
+      <div class="pill">👤 <span id="hudName">Jogador</span></div>
+      <div class="pill">⭐ Pontos: <span id="hudScore">0</span></div>
+      <div class="pill">🏆 Recorde: <span id="hudBest">0</span></div>
+      <div class="pill">⏱️ Tempo: <span id="hudTime">30</span>s</div>
+    </div>
+
+    <div class="gameCard">
+      <div id="board" aria-label="Área do jogo">
+        <div id="player"></div>
+        <!-- moedas/inimigos/obstáculos entram via JS -->
+      </div>
+
+      <div class="controls" aria-label="Controles">
+        <div></div>
+        <button class="btn" id="upBtn">⬆️</button>
+        <div></div>
+
+        <button class="btn" id="leftBtn">⬅️</button>
+        <div></div>
+        <button class="btn" id="rightBtn">➡️</button>
+
+        <div></div>
+        <button class="btn" id="downBtn">⬇️</button>
+        <div></div>
+      </div>
+
+      <div class="row">
+        <button class="action primary" id="restartBtn">🔁 Reiniciar</button>
+        <button class="action ghost" id="pauseBtn">⏸️ Pausar</button>
+        <button class="action danger" id="muteBtn">🔊 Som</button>
+      </div>
+    </div>
+
+    <div class="help">
+      <details>
+        <summary>📌 Dicas rápidas</summary>
+        <div>
+          • No teclado: <code>W A S D</code> ou <code>↑ ↓ ← →</code><br/>
+          • No celular: use os botões.<br/>
+          • Objetivo: pegar <b id="goalLabel">10</b> moedas para vencer.<br/>
+        </div>
+      </details>
+    </div>
   </div>
 
-  <div class="board" id="board">
-    <div class="player" id="player"></div>
-    <div class="coin" id="coin"></div>
-  </div>
-
-  <div class="controls">
-    <button class="btn up" id="up">⬆️</button>
-    <button class="btn left" id="left">⬅️</button>
-    <button class="btn right" id="right">➡️</button>
-    <button class="btn down" id="down">⬇️</button>
-  </div>
-
-  <!-- Tela inicial -->
-  <div class="overlay" id="startScreen" style="display:flex;">
+  <!-- Tela Inicial -->
+  <div class="overlay show" id="startOverlay">
     <div class="modal">
-      <h2>Bem-vinda ao jogo!</h2>
-      <p>Use os botões (ou as setas do teclado) para mover o quadrado e pegar as moedas.</p>
-      <button class="action" id="startBtn">Jogar</button>
-      <div class="hint">Dica: no celular, use só os botões 🙂</div>
+      <h2>Começar</h2>
+      <p>Escolha o nome e a dificuldade.</p>
+
+      <div class="startCard">
+        <div class="field">
+          <label>Seu nome</label>
+          <input id="nameInput" maxlength="18" placeholder="Ex: Clecia" />
+        </div>
+
+        <div class="field">
+          <label>Dificuldade</label>
+          <select id="difficulty">
+            <option value="easy">Fácil</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Difícil</option>
+          </select>
+        </div>
+
+        <div class="badge">🎯 Objetivo: <b><span id="goalPreview">10</span> moedas</b> para vencer</div>
+
+        <div class="row">
+          <button class="action primary" id="startBtn">▶️ Jogar</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Game Over -->
-  <div class="overlay" id="gameOverScreen">
+  <div class="overlay" id="overOverlay">
     <div class="modal">
-      <h2>Game Over 😅</h2>
-      <p>Sua pontuação: <b><span id="finalScore">0</span></b></p>
-      <button class="action" id="restartBtn">Jogar de novo</button>
-      <div class="hint">Você consegue bater o recorde!</div>
+      <h2>💥 Game Over</h2>
+      <p id="overMsg">Você perdeu!</p>
+      <div class="badge">⭐ Pontos: <b id="finalScore">0</b></div>
+      <div class="badge">🏆 Recorde: <b id="finalBest">0</b></div>
+      <div class="row">
+        <button class="action primary" id="playAgainBtn">🔁 Jogar de novo</button>
+        <button class="action ghost" id="backStartBtn">🏠 Voltar</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    const board = document.getElementById("board");
-    const player = document.getElementById("player");
-    const coin = document.getElementById("coin");
+  <!-- Vitória -->
+  <div class="overlay" id="winOverlay">
+    <div class="modal">
+      <h2>🎉 Você venceu!</h2>
+      <p>Você alcançou o objetivo!</p>
+      <div class="badge">⭐ Pontos: <b id="winScore">0</b></div>
+      <div class="badge">🏆 Recorde: <b id="winBest">0</b></div>
+      <div class="row">
+        <button class="action primary" id="nextLevelBtn">🚀 Jogar de novo</button>
+        <button class="action ghost" id="winBackBtn">🏠 Voltar</button>
+      </div>
+    </div>
+  </div>
 
-    const scoreEl = document.getElementById("score");
-    const timeEl = document.getElementById("time");
-    const bestEl = document.getElementById("best");
+<script>
+/* =========================
+   CONFIG (fácil de mudar)
+========================= */
+const SETTINGS = {
+  boardSize: 420,        // o CSS controla visual; aqui é lógica
+  baseTime: 30,
+  goalCoins: 10,
+};
 
-    const startScreen = document.getElementById("startScreen");
-    const gameOverScreen = document.getElementById("gameOverScreen");
-    const startBtn = document.getElementById("startBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    const finalScoreEl = document.getElementById("finalScore");
+let soundOn = true;
 
-    const btnUp = document.getElementById("up");
-    const btnDown = document.getElementById("down");
-    const btnLeft = document.getElementById("left");
-    const btnRight = document.getElementById("right");
+/* =========================
+   ELEMENTOS
+========================= */
+const board = document.getElementById("board");
+const playerEl = document.getElementById("player");
+const hudName = document.getElementById("hudName");
+const hudScore = document.getElementById("hudScore");
+const hudBest = document.getElementById("hudBest");
+const hudTime = document.getElementById("hudTime");
+const goalLabel = document.getElementById("goalLabel");
+const goalPreview = document.getElementById("goalPreview");
 
-    // Config do jogo
-    const STEP = 14;      // passo por movimento
-    const START_TIME = 20; // segundos
+const startOverlay = document.getElementById("startOverlay");
+const overOverlay = document.getElementById("overOverlay");
+const winOverlay = document.getElementById("winOverlay");
 
-    let x = 146, y = 146;
-    let score = 0;
-    let timeLeft = START_TIME;
-    let timerId = null;
-    let playing = false;
+const nameInput = document.getElementById("nameInput");
+const difficultySel = document.getElementById("difficulty");
 
-    // Best score (salva no navegador)
-    const BEST_KEY = "meu_primeiro_jogo_best";
-    let best = Number(localStorage.getItem(BEST_KEY) || "0");
-    bestEl.textContent = best;
+const startBtn = document.getElementById("startBtn");
+const restartBtn = document.getElementById("restartBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const muteBtn = document.getElementById("muteBtn");
 
-    function setPlayerPos() {
-      player.style.left = x + "px";
-      player.style.top = y + "px";
+const upBtn = document.getElementById("upBtn");
+const downBtn = document.getElementById("downBtn");
+const leftBtn = document.getElementById("leftBtn");
+const rightBtn = document.getElementById("rightBtn");
+
+const overMsg = document.getElementById("overMsg");
+const finalScore = document.getElementById("finalScore");
+const finalBest = document.getElementById("finalBest");
+const playAgainBtn = document.getElementById("playAgainBtn");
+const backStartBtn = document.getElementById("backStartBtn");
+
+const winScore = document.getElementById("winScore");
+const winBest = document.getElementById("winBest");
+const nextLevelBtn = document.getElementById("nextLevelBtn");
+const winBackBtn = document.getElementById("winBackBtn");
+
+/* =========================
+   ÁUDIO (SEM ARQUIVOS)
+========================= */
+let audioCtx = null;
+function beep(freq=440, duration=0.08, type="sine", gain=0.08){
+  if(!soundOn) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = gain;
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); }, duration*1000);
+  }catch(e){}
+}
+function sfxCoin(){ beep(740, 0.07, "triangle", 0.09); setTimeout(()=>beep(980,0.06,"triangle",0.07), 60); }
+function sfxHit(){ beep(180, 0.12, "sawtooth", 0.10); }
+function sfxWin(){ beep(660,0.09,"sine",0.08); setTimeout(()=>beep(880,0.09,"sine",0.08), 90); setTimeout(()=>beep(990,0.11,"sine",0.08), 180); }
+
+/* =========================
+   ESTADO DO JOGO
+========================= */
+let player = { x: 0, y: 0, size: 26, speed: 10 };
+let score = 0;
+let best = Number(localStorage.getItem("bestScore") || "0");
+let timeLeft = SETTINGS.baseTime;
+let coinsCollected = 0;
+let paused = false;
+let running = false;
+
+let coinEl = null;
+let enemyEl = null;
+let walls = [];
+let enemy = { x: 0, y: 0, size: 24, vx: 2.0, vy: 1.6 };
+
+let timerId = null;
+let tickId = null;
+
+/* dificuldade */
+function applyDifficulty(diff){
+  // tudo que muda por dificuldade (bem simples)
+  if(diff === "easy"){
+    player.speed = 12;
+    timeLeft = 35;
+    enemy.vx = 1.6; enemy.vy = 1.2;
+  }else if(diff === "hard"){
+    player.speed = 9;
+    timeLeft = 25;
+    enemy.vx = 2.6; enemy.vy = 2.2;
+  }else{
+    player.speed = 10;
+    timeLeft = 30;
+    enemy.vx = 2.1; enemy.vy = 1.7;
+  }
+}
+
+/* =========================
+   UTILIDADES
+========================= */
+function boardRect(){
+  const r = board.getBoundingClientRect();
+  return { w: r.width, h: r.height };
+}
+function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+function rectsOverlap(a, b){
+  return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
+}
+function setPos(el, x, y){
+  el.style.left = x + "px";
+  el.style.top  = y + "px";
+}
+
+/* =========================
+   CRIAR / REMOVER OBJETOS
+========================= */
+function clearDynamic(){
+  // remove coin
+  if(coinEl){ coinEl.remove(); coinEl = null; }
+  // remove enemy
+  if(enemyEl){ enemyEl.remove(); enemyEl = null; }
+  // remove walls
+  walls.forEach(w => w.el.remove());
+  walls = [];
+}
+
+function spawnCoin(){
+  if(coinEl) coinEl.remove();
+  coinEl = document.createElement("div");
+  coinEl.className = "coin";
+  board.appendChild(coinEl);
+
+  const { w, h } = boardRect();
+  const pad = 18;
+  let x, y, tries = 0;
+
+  do{
+    x = Math.random()*(w - pad*2) + pad;
+    y = Math.random()*(h - pad*2) + pad;
+    tries++;
+  }while( collidesWithWalls({x, y, w: 20, h: 20}) && tries < 50 );
+
+  setPos(coinEl, x, y);
+}
+
+function spawnEnemy(){
+  if(enemyEl) enemyEl.remove();
+  enemyEl = document.createElement("div");
+  enemyEl.className = "enemy";
+  board.appendChild(enemyEl);
+
+  const { w, h } = boardRect();
+  enemy.x = Math.random()*(w-40)+20;
+  enemy.y = Math.random()*(h-40)+20;
+
+  // evita nascer em cima do jogador
+  const dx = enemy.x - player.x;
+  const dy = enemy.y - player.y;
+  if(Math.hypot(dx,dy) < 80){
+    enemy.x = 20; enemy.y = 20;
+  }
+  setPos(enemyEl, enemy.x, enemy.y);
+}
+
+function buildWalls(){
+  // obstáculos fixos (você pode mudar depois)
+  const { w, h } = boardRect();
+  const list = [
+    { x: w*0.18, y: h*0.20, w: w*0.18, h: h*0.08 },
+    { x: w*0.55, y: h*0.35, w: w*0.22, h: h*0.08 },
+    { x: w*0.30, y: h*0.62, w: w*0.16, h: h*0.10 },
+    { x: w*0.62, y: h*0.70, w: w*0.18, h: h*0.08 },
+  ];
+
+  list.forEach(item=>{
+    const el = document.createElement("div");
+    el.className = "wall";
+    el.style.left = item.x + "px";
+    el.style.top  = item.y + "px";
+    el.style.width  = item.w + "px";
+    el.style.height = item.h + "px";
+    board.appendChild(el);
+    walls.push({ ...item, el });
+  });
+}
+
+function collidesWithWalls(r){
+  return walls.some(w => rectsOverlap(r, {x:w.x, y:w.y, w:w.w, h:w.h}));
+}
+
+/* =========================
+   ATUALIZAR HUD
+========================= */
+function updateHud(){
+  hudScore.textContent = score;
+  hudBest.textContent = best;
+  hudTime.textContent = timeLeft;
+}
+
+/* =========================
+   MOVIMENTO
+========================= */
+function movePlayer(dx, dy){
+  if(!running || paused) return;
+
+  const { w, h } = boardRect();
+  let nx = player.x + dx;
+  let ny = player.y + dy;
+
+  // bordas
+  nx = clamp(nx, player.size/2, w - player.size/2);
+  ny = clamp(ny, player.size/2, h - player.size/2);
+
+  // colisão com paredes (tentativa por eixo)
+  const half = player.size/2;
+  const nextRect = { x: nx-half, y: ny-half, w: player.size, h: player.size };
+
+  if(collidesWithWalls(nextRect)){
+    // tenta só X
+    const rectX = { x: nx-half, y: player.y-half, w: player.size, h: player.size };
+    if(!collidesWithWalls(rectX)) player.x = nx;
+
+    // tenta só Y
+    const rectY = { x: player.x-half, y: ny-half, w: player.size, h: player.size };
+    if(!collidesWithWalls(rectY)) player.y = ny;
+  }else{
+    player.x = nx;
+    player.y = ny;
+  }
+
+  setPos(playerEl, player.x - half, player.y - half);
+  checkCoin();
+  checkEnemyHit();
+}
+
+/* inimigo anda e rebate */
+function moveEnemy(){
+  if(!running || paused) return;
+
+  const { w, h } = boardRect();
+
+  let nx = enemy.x + enemy.vx;
+  let ny = enemy.y + enemy.vy;
+
+  // rebater nas bordas
+  if(nx < 0 || nx > w - enemy.size){ enemy.vx *= -1; nx = enemy.x + enemy.vx; }
+  if(ny < 0 || ny > h - enemy.size){ enemy.vy *= -1; ny = enemy.y + enemy.vy; }
+
+  // colisão com paredes (rebate)
+  const nextRect = { x:nx, y:ny, w:enemy.size, h:enemy.size };
+  if(collidesWithWalls(nextRect)){
+    enemy.vx *= -1;
+    enemy.vy *= -1;
+    nx = enemy.x + enemy.vx;
+    ny = enemy.y + enemy.vy;
+  }
+
+  enemy.x = nx;
+  enemy.y = ny;
+  setPos(enemyEl, enemy.x, enemy.y);
+
+  checkEnemyHit();
+}
+
+/* =========================
+   COLISÕES / VITÓRIA / DERROTA
+========================= */
+function checkCoin(){
+  if(!coinEl) return;
+  const c = coinEl.getBoundingClientRect();
+  const b = board.getBoundingClientRect();
+
+  const coin = {
+    x: c.left - b.left,
+    y: c.top - b.top,
+    w: c.width,
+    h: c.height
+  };
+
+  const half = player.size/2;
+  const p = { x: player.x-half, y: player.y-half, w: player.size, h: player.size };
+
+  if(rectsOverlap(p, coin)){
+    sfxCoin();
+    score += 10;
+    coinsCollected += 1;
+    updateHud();
+    spawnCoin();
+
+    if(coinsCollected >= SETTINGS.goalCoins){
+      winGame();
     }
+  }
+}
 
-    function randomPos(max) {
-      return Math.floor(Math.random() * (max + 1));
-    }
+function checkEnemyHit(){
+  if(!enemyEl) return;
+  const half = player.size/2;
+  const p = { x: player.x-half, y: player.y-half, w: player.size, h: player.size };
+  const e = { x: enemy.x, y: enemy.y, w: enemy.size, h: enemy.size };
+  if(rectsOverlap(p, e)){
+    sfxHit();
+    gameOver("Você encostou no inimigo 😬");
+  }
+}
 
-    function placeCoin() {
-      const maxX = board.clientWidth - coin.clientWidth;
-      const maxY = board.clientHeight - coin.clientHeight;
+function gameOver(reason){
+  stopLoops();
+  running = false;
 
-      const cx = randomPos(maxX);
-      const cy = randomPos(maxY);
+  if(score > best){
+    best = score;
+    localStorage.setItem("bestScore", String(best));
+  }
 
-      coin.style.left = cx + "px";
-      coin.style.top = cy + "px";
-    }
+  overMsg.textContent = reason;
+  finalScore.textContent = score;
+  finalBest.textContent = best;
+  updateHud();
+  overOverlay.classList.add("show");
+  setControlsDisabled(true);
+}
 
-    function clamp(n, min, max) {
-      return Math.max(min, Math.min(max, n));
-    }
+function winGame(){
+  stopLoops();
+  running = false;
+  sfxWin();
 
-    function checkCollision() {
-      const p = player.getBoundingClientRect();
-      const c = coin.getBoundingClientRect();
+  if(score > best){
+    best = score;
+    localStorage.setItem("bestScore", String(best));
+  }
 
-      const hit = !(p.right < c.left || p.left > c.right || p.bottom < c.top || p.top > c.bottom);
-      if (hit) {
-        score += 1;
-        scoreEl.textContent = score;
-        placeCoin();
-      }
-    }
+  winScore.textContent = score;
+  winBest.textContent = best;
+  updateHud();
+  winOverlay.classList.add("show");
+  setControlsDisabled(true);
+}
 
-    function move(dx, dy) {
-      if (!playing) return;
+function tickTime(){
+  if(!running || paused) return;
+  timeLeft -= 1;
+  hudTime.textContent = timeLeft;
+  if(timeLeft <= 0){
+    gameOver("O tempo acabou ⏱️");
+  }
+}
 
-      const maxX = board.clientWidth - player.clientWidth;
-      const maxY = board.clientHeight - player.clientHeight;
+/* =========================
+   LOOP / PAUSA
+========================= */
+function stopLoops(){
+  if(timerId) clearInterval(timerId);
+  if(tickId) clearInterval(tickId);
+  timerId = null;
+  tickId = null;
+}
 
-      x = clamp(x + dx, 0, maxX);
-      y = clamp(y + dy, 0, maxY);
+function startLoops(){
+  stopLoops();
+  timerId = setInterval(tickTime, 1000);
+  // inimigo anda ~40fps
+  tickId = setInterval(moveEnemy, 25);
+}
 
-      setPlayerPos();
-      checkCollision();
-    }
+function setControlsDisabled(disabled){
+  [upBtn,downBtn,leftBtn,rightBtn,restartBtn,pauseBtn,muteBtn].forEach(btn=>{
+    btn.classList.toggle("disabled", disabled);
+  });
+}
 
-    function startGame() {
-      // reset
-      score = 0;
-      timeLeft = START_TIME;
-      scoreEl.textContent = score;
-      timeEl.textContent = timeLeft;
+/* =========================
+   INICIAR / REINICIAR
+========================= */
+function resetGame(keepName=true){
+  clearDynamic();
+  paused = false;
+  pauseBtn.textContent = "⏸️ Pausar";
 
-      x = 146; y = 146;
-      setPlayerPos();
-      placeCoin();
+  score = 0;
+  coinsCollected = 0;
 
-      // telas
-      startScreen.style.display = "none";
-      gameOverScreen.style.display = "none";
+  // posição inicial do player
+  const { w, h } = boardRect();
+  player.x = w/2;
+  player.y = h/2;
+  setPos(playerEl, player.x - player.size/2, player.y - player.size/2);
 
-      playing = true;
+  // obstáculos + itens
+  buildWalls();
+  spawnCoin();
+  spawnEnemy();
 
-      // timer
-      if (timerId) clearInterval(timerId);
-      timerId = setInterval(() => {
-        timeLeft -= 1;
-        timeEl.textContent = timeLeft;
-        if (timeLeft <= 0) endGame();
-      }, 1000);
-    }
+  // hud
+  updateHud();
+  goalLabel.textContent = SETTINGS.goalCoins;
+  goalPreview.textContent = SETTINGS.goalCoins;
 
-    function endGame() {
-      playing = false;
-      if (timerId) clearInterval(timerId);
+  if(!keepName){
+    hudName.textContent = "Jogador";
+  }
+}
 
-      // recorde
-      if (score > best) {
-        best = score;
-        localStorage.setItem(BEST_KEY, String(best));
-        bestEl.textContent = best;
-      }
+function startGame(){
+  overOverlay.classList.remove("show");
+  winOverlay.classList.remove("show");
+  startOverlay.classList.remove("show");
 
-      finalScoreEl.textContent = score;
-      gameOverScreen.style.display = "flex";
-    }
+  const name = (nameInput.value || "").trim() || "Jogador";
+  hudName.textContent = name;
 
-    // Botões (celular)
-    btnUp.addEventListener("click", () => move(0, -STEP));
-    btnDown.addEventListener("click", () => move(0, STEP));
-    btnLeft.addEventListener("click", () => move(-STEP, 0));
-    btnRight.addEventListener("click", () => move(STEP, 0));
+  applyDifficulty(difficultySel.value);
+  resetGame(true);
 
-    // Teclado (PC)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp") move(0, -STEP);
-      if (e.key === "ArrowDown") move(0, STEP);
-      if (e.key === "ArrowLeft") move(-STEP, 0);
-      if (e.key === "ArrowRight") move(STEP, 0);
-    });
+  running = true;
+  setControlsDisabled(false);
+  updateHud();
+  startLoops();
+}
 
-    // Começar / reiniciar
-    startBtn.addEventListener("click", startGame);
-    restartBtn.addEventListener("click", startGame);
+function restartNow(){
+  // mantém nome e dificuldade atual
+  overOverlay.classList.remove("show");
+  winOverlay.classList.remove("show");
 
-    // Estado inicial
-    setPlayerPos();
-    placeCoin();
-  </script>
+  applyDifficulty(difficultySel.value);
+  resetGame(true);
+
+  running = true;
+  setControlsDisabled(false);
+  updateHud();
+  startLoops();
+}
+
+/* =========================
+   CONTROLES (BOTÕES + TECLADO)
+========================= */
+function bindHold(btn, dx, dy){
+  let hold = null;
+
+  const start = (e)=>{
+    e.preventDefault();
+    movePlayer(dx,dy);
+    hold = setInterval(()=>movePlayer(dx,dy), 70);
+  };
+  const end = ()=>{
+    if(hold) clearInterval(hold);
+    hold = null;
+  };
+
+  btn.addEventListener("touchstart", start, {passive:false});
+  btn.addEventListener("touchend", end);
+  btn.addEventListener("touchcancel", end);
+
+  btn.addEventListener("mousedown", start);
+  btn.addEventListener("mouseup", end);
+  btn.addEventListener("mouseleave", end);
+}
+
+bindHold(upBtn, 0, -player.speed);
+bindHold(downBtn, 0, player.speed);
+bindHold(leftBtn, -player.speed, 0);
+bindHold(rightBtn, player.speed, 0);
+
+window.addEventListener("keydown", (e)=>{
+  if(e.key === "ArrowUp" || e.key.toLowerCase()==="w") movePlayer(0, -player.speed);
+  if(e.key === "ArrowDown" || e.key.toLowerCase()==="s") movePlayer(0, player.speed);
+  if(e.key === "ArrowLeft" || e.key.toLowerCase()==="a") movePlayer(-player.speed, 0);
+  if(e.key === "ArrowRight" || e.key.toLowerCase()==="d") movePlayer(player.speed, 0);
+});
+
+/* =========================
+   BOTÕES DE AÇÃO
+========================= */
+startBtn.addEventListener("click", startGame);
+
+restartBtn.addEventListener("click", restartNow);
+
+pauseBtn.addEventListener("click", ()=>{
+  if(!running) return;
+  paused = !paused;
+  pauseBtn.textContent = paused ? "▶️ Continuar" : "⏸️ Pausar";
+});
+
+muteBtn.addEventListener("click", ()=>{
+  soundOn = !soundOn;
+  muteBtn.textContent = soundOn ? "🔊 Som" : "🔇 Mudo";
+  muteBtn.classList.toggle("danger", !soundOn);
+  if(soundOn) beep(520, 0.06, "sine", 0.06);
+});
+
+playAgainBtn.addEventListener("click", restartNow);
+nextLevelBtn.addEventListener("click", restartNow);
+
+backStartBtn.addEventListener("click", ()=>{
+  overOverlay.classList.remove("show");
+  startOverlay.classList.add("show");
+  setControlsDisabled(true);
+});
+winBackBtn.addEventListener("click", ()=>{
+  winOverlay.classList.remove("show");
+  startOverlay.classList.add("show");
+  setControlsDisabled(true);
+});
+
+/* =========================
+   PRIMEIRA CARGA
+========================= */
+hudBest.textContent = best;
+goalLabel.textContent = SETTINGS.goalCoins;
+goalPreview.textContent = SETTINGS.goalCoins;
+setControlsDisabled(true);
+
+// garante que ao abrir, fique na tela inicial
+startOverlay.classList.add("show");
+</script>
 </body>
 </html>
