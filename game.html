@@ -3,498 +3,159 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Princesa: Make & Dress Party</title>
+  <title>Frase Bíblica do Dia</title>
   <style>
     :root{
-      --bg1:#ff7bb0; --bg2:#7b61ff;
-      --card: rgba(255,255,255,.18);
-      --border: rgba(255,255,255,.28);
-      --text:#ffffff; --muted: rgba(255,255,255,.85);
-      --shadow: 0 18px 40px rgba(0,0,0,.25);
+      --bg1:#0f2c5c; --bg2:#2a5aa6; --card:rgba(255,255,255,.12);
+      --text:#fff; --muted:rgba(255,255,255,.8);
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      min-height:100vh;
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      color:var(--text);
-      display:flex;
-      justify-content:center;
-      padding:18px;
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      min-height:100vh; color:var(--text);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex; justify-content:center; padding:18px;
     }
-    .wrap{width:min(920px, 100%); display:flex; flex-direction:column; gap:14px;}
-    .top{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
-    }
-    h1{margin:0; font-size: 22px; text-align:center;}
-    .sub{margin:6px 0 0; text-align:center; color:var(--muted); font-size:14px;}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-    }
-    @media (max-width: 840px){
-      .grid{grid-template-columns: 1fr; }
-    }
+    .wrap{width:min(720px,100%);}
+    .title{font-size:34px; font-weight:900; text-align:center; margin:14px 0 6px;}
+    .subtitle{text-align:center; color:var(--muted); margin:0 0 14px;}
     .card{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 12px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      background:var(--card); border:1px solid rgba(255,255,255,.18);
+      border-radius:18px; padding:16px; backdrop-filter: blur(6px);
+      box-shadow:0 12px 30px rgba(0,0,0,.18);
     }
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .pill{
-      background: rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.26);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 13px;
-      display:flex;
-      align-items:center;
-      gap:8px;
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; margin:10px 0 0;}
+    input[type="date"]{
+      padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.12); color:var(--text); outline:none;
     }
-    .btn{
-      appearance:none;
-      border:none;
-      border-radius: 14px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,.22);
-      color: var(--text);
-      font-weight: 800;
-      cursor:pointer;
-      border: 1px solid rgba(255,255,255,.25);
+    button{
+      padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.16); color:var(--text); font-weight:700;
     }
-    .btn:active{transform: scale(.98)}
-    .btn.primary{background: rgba(255,255,255,.32)}
-    .btn.small{padding:8px 10px; border-radius: 12px; font-weight: 700}
-    .sectionTitle{font-weight:900; margin:10px 0 8px; font-size:14px; opacity:.95}
-    .choices{display:flex; gap:8px; flex-wrap:wrap}
-    .choice{
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.25);
-      background: rgba(255,255,255,.14);
-      cursor:pointer;
-      font-size: 13px;
-      font-weight: 800;
-      user-select:none;
+    button:active{transform:scale(.99)}
+    .verse{
+      margin-top:14px; font-size:22px; line-height:1.35; text-align:center;
+      padding:14px; border-radius:16px; background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
     }
-    .choice.active{background: rgba(255,255,255,.30)}
-    .stage{
-      display:flex; gap:12px; align-items:stretch; justify-content:center; flex-wrap:wrap;
-    }
-    .avatarWrap{
-      width: min(360px, 100%);
-      display:flex; flex-direction:column; gap:10px;
-      align-items:center;
-    }
-    .avatarBox{
-      width: 320px; max-width: 100%;
-      aspect-ratio: 1/1.15;
-      border-radius: 20px;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.22);
-      position: relative;
-      overflow:hidden;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.06);
-    }
-    .hint{font-size: 13px; color: var(--muted); text-align:center}
-    /* Avatar (CSS art simples) */
-    .princess{
-      position:absolute; inset:0;
-      display:flex; justify-content:center; align-items:flex-end;
-      padding-bottom: 10px;
-    }
-    .body{
-      width: 210px;
-      height: 260px;
-      position: relative;
-      display:flex; justify-content:center; align-items:flex-start;
-    }
-    .head{
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      background: #ffd3c1;
-      position:absolute;
-      top: 10px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.18);
-    }
-    .eyes{
-      position:absolute; top: 52px; left: 0; right:0;
-      display:flex; justify-content:center; gap:22px;
-    }
-    .eye{
-      width: 12px; height: 12px; border-radius: 50%;
-      background: #2b1b1b;
-      box-shadow: 0 0 0 4px rgba(255,255,255,.55);
-    }
-    .mouth{
-      position:absolute; top: 84px; left:0; right:0;
-      display:flex; justify-content:center;
-    }
-    .lip{
-      width: 30px; height: 14px;
-      border-radius: 0 0 20px 20px;
-      background: var(--lip, #ff4d88);
-      box-shadow: 0 6px 10px rgba(0,0,0,.12);
-    }
-    .blush{
-      position:absolute; top: 72px; left: 18px; right:18px;
-      display:flex; justify-content:space-between;
-      opacity: var(--blushOpacity, .35);
-    }
-    .cheek{
-      width: 26px; height: 14px; border-radius: 50%;
-      background: #ff7aa6;
-      filter: blur(.2px);
-    }
-    .shadowEyes{
-      position:absolute; top: 44px; left:0; right:0;
-      display:flex; justify-content:center; gap:22px;
-      opacity: var(--shadowOpacity, .45);
-    }
-    .shadowDot{
-      width: 24px; height: 10px; border-radius: 999px;
-      background: var(--shadowColor, #7b61ff);
-      filter: blur(.2px);
-    }
-    .hair{
-      position:absolute; top: -6px; left: 50%;
-      transform: translateX(-50%);
-      width: 150px; height: 90px;
-      background: var(--hair, #6b3b2a);
-      border-radius: 80px 80px 60px 60px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.18);
-    }
-    .hair:before, .hair:after{
-      content:"";
-      position:absolute;
-      top: 50px;
-      width: 60px; height: 65px;
-      background: var(--hair, #6b3b2a);
-      border-radius: 0 0 60px 60px;
-    }
-    .hair:before{left: -6px; transform: rotate(8deg)}
-    .hair:after{right:-6px; transform: rotate(-8deg)}
-    .crown{
-      position:absolute;
-      top: 0px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90px; height: 46px;
-      display:flex; justify-content:space-between; align-items:flex-end;
-      opacity: var(--crownOpacity, 1);
-      filter: drop-shadow(0 10px 12px rgba(0,0,0,.18));
-    }
-    .crown span{
-      width: 26px; height: 30px;
-      background: var(--crown, #ffd34d);
-      clip-path: polygon(50% 0%, 65% 30%, 100% 30%, 70% 100%, 50% 78%, 30% 100%, 0% 30%, 35% 30%);
-      border-radius: 6px;
-    }
-    .dress{
-      position:absolute;
-      top: 118px;
-      width: 210px; height: 170px;
-      background: var(--dress, #ff4d88);
-      border-radius: 22px 22px 26px 26px;
-      clip-path: polygon(20% 0%, 80% 0%, 95% 25%, 100% 100%, 0% 100%, 5% 25%);
-      box-shadow: 0 18px 25px rgba(0,0,0,.18);
-    }
-    .belt{
-      position:absolute;
-      top: 150px;
-      width: 170px; height: 18px;
-      background: rgba(255,255,255,.22);
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.25);
-    }
-    .shoes{
-      position:absolute;
-      bottom: 0px;
-      width: 120px; height: 18px;
-      display:flex; justify-content:space-between;
-    }
-    .shoe{
-      width: 46px; height: 16px;
-      background: var(--shoes, #2b1b1b);
-      border-radius: 12px 12px 18px 18px;
-      box-shadow: 0 10px 14px rgba(0,0,0,.18);
-    }
-
-    /* Festa (tela final) */
-    .party{
-      display:none;
-      text-align:center;
-      padding: 12px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.22);
-    }
-    .party h2{margin: 6px 0 4px; font-size: 18px}
-    .friends{
-      margin-top: 10px;
-      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-    }
-    .friend{
-      width: 86px; height: 110px;
-      border-radius: 16px;
-      background: rgba(255,255,255,.18);
-      border: 1px solid rgba(255,255,255,.25);
-      position:relative;
-      overflow:hidden;
-    }
-    .friend .fhead{
-      width: 38px; height: 38px; border-radius: 50%;
-      background:#ffd3c1;
-      position:absolute; top:12px; left:50%;
-      transform:translateX(-50%);
-    }
-    .friend .fdress{
-      width: 70px; height: 58px;
-      position:absolute; bottom:12px; left:50%;
-      transform:translateX(-50%);
-      border-radius: 14px;
-      clip-path: polygon(22% 0%, 78% 0%, 95% 25%, 100% 100%, 0% 100%, 5% 25%);
-      background: var(--fdress, #ff4d88);
-    }
+    .ref{display:block; margin-top:10px; font-size:16px; color:var(--muted); font-weight:700;}
+    .mini{margin-top:10px; text-align:center; color:var(--muted); font-size:13px;}
+    .ok{opacity:.95}
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="top">
-      <h1>👑 Princesa: Make & Dress Party</h1>
-      <p class="sub">Escolha o visual da princesa, faça a maquiagem e depois clique em <b>Ir para a Festa</b> ✨</p>
-    </div>
+    <div class="title">📖 Frase Bíblica do Dia</div>
+    <p class="subtitle">Escolha uma data no calendário ou veja automaticamente a frase de hoje.</p>
 
-    <div class="grid">
-      <div class="card">
-        <div class="stage">
-          <div class="avatarWrap">
-            <div class="avatarBox" id="avatarBox">
-              <div class="princess">
-                <div class="body" id="body">
-                  <div class="head" id="head">
-                    <div class="hair" id="hair"></div>
-                    <div class="crown" id="crown">
-                      <span></span><span></span><span></span>
-                    </div>
+    <div class="card">
+      <div class="row">
+        <label>
+          <span style="display:block; font-size:12px; color:var(--muted); margin:0 0 6px;">Calendário</span>
+          <input id="date" type="date" />
+        </label>
 
-                    <div class="shadowEyes" id="shadowEyes">
-                      <div class="shadowDot"></div>
-                      <div class="shadowDot"></div>
-                    </div>
-
-                    <div class="eyes">
-                      <div class="eye"></div>
-                      <div class="eye"></div>
-                    </div>
-
-                    <div class="blush" id="blush">
-                      <div class="cheek"></div>
-                      <div class="cheek"></div>
-                    </div>
-
-                    <div class="mouth">
-                      <div class="lip" id="lip"></div>
-                    </div>
-                  </div>
-
-                  <div class="dress" id="dress"></div>
-                  <div class="belt" id="belt"></div>
-                  <div class="shoes" id="shoes">
-                    <div class="shoe"></div>
-                    <div class="shoe"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <button class="btn primary" id="partyBtn">🎉 Ir para a festa</button>
-              <button class="btn" id="resetBtn">↩️ Resetar</button>
-            </div>
-            <div class="hint">Dica: se quiser, dá para trocar as cores e criar “fases” depois 😉</div>
-
-            <div class="party" id="party">
-              <h2>✨ Festa das Princesas ✨</h2>
-              <div id="partyText">Você chegou na festa com um look incrível!</div>
-              <div class="friends" id="friends">
-                <div class="friend" style="--fdress:#ff4d88"><div class="fhead"></div><div class="fdress"></div></div>
-                <div class="friend" style="--fdress:#7b61ff"><div class="fhead"></div><div class="fdress"></div></div>
-                <div class="friend" style="--fdress:#26d0ce"><div class="fhead"></div><div class="fdress"></div></div>
-                <div class="friend" style="--fdress:#ffd34d"><div class="fhead"></div><div class="fdress"></div></div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        <button id="todayBtn">Hoje</button>
+        <button id="shareBtn">Compartilhar</button>
+        <button id="copyBtn">Copiar</button>
       </div>
 
-      <div class="card">
-        <div class="row">
-          <div class="pill">👧 Princesa: <b id="princessName">Luna</b></div>
-          <div class="pill">💄 Look: <b id="lookName">Rosa</b></div>
-        </div>
-
-        <div class="sectionTitle">Escolha a princesa</div>
-        <div class="choices" id="princessChoices">
-          <div class="choice active" data-princess="Luna">Luna</div>
-          <div class="choice" data-princess="Bella">Bella</div>
-          <div class="choice" data-princess="Sofia">Sofia</div>
-          <div class="choice" data-princess="Maya">Maya</div>
-        </div>
-
-        <div class="sectionTitle">Vestido</div>
-        <div class="choices" id="dressChoices">
-          <div class="choice active" data-dress="#ff4d88">Rosa</div>
-          <div class="choice" data-dress="#7b61ff">Roxo</div>
-          <div class="choice" data-dress="#26d0ce">Turquesa</div>
-          <div class="choice" data-dress="#ffd34d">Dourado</div>
-        </div>
-
-        <div class="sectionTitle">Cabelo</div>
-        <div class="choices" id="hairChoices">
-          <div class="choice active" data-hair="#6b3b2a">Castanho</div>
-          <div class="choice" data-hair="#2b1b1b">Preto</div>
-          <div class="choice" data-hair="#f2c14e">Loiro</div>
-          <div class="choice" data-hair="#d03b78">Rosa</div>
-        </div>
-
-        <div class="sectionTitle">Coroa</div>
-        <div class="choices" id="crownChoices">
-          <div class="choice active" data-crown="#ffd34d" data-crownOpacity="1">Dourada</div>
-          <div class="choice" data-crown="#ffffff" data-crownOpacity="1">Branca</div>
-          <div class="choice" data-crown="#7b61ff" data-crownOpacity="1">Roxa</div>
-          <div class="choice" data-crown="#ffd34d" data-crownOpacity="0">Sem coroa</div>
-        </div>
-
-        <div class="sectionTitle">Maquiagem (batom + sombra)</div>
-        <div class="choices" id="makeChoices">
-          <div class="choice active" data-lip="#ff4d88" data-shadow="#7b61ff">Glam</div>
-          <div class="choice" data-lip="#ff3b3b" data-shadow="#ffd34d">Festa</div>
-          <div class="choice" data-lip="#7b61ff" data-shadow="#26d0ce">Neon</div>
-          <div class="choice" data-lip="#b84a62" data-shadow="#ffffff">Suave</div>
-        </div>
-
-        <div class="sectionTitle">Acessórios</div>
-        <div class="choices" id="shoeChoices">
-          <div class="choice active" data-shoes="#2b1b1b">Sapato preto</div>
-          <div class="choice" data-shoes="#ffffff">Sapato branco</div>
-          <div class="choice" data-shoes="#ffd34d">Sapato dourado</div>
-          <div class="choice" data-shoes="#7b61ff">Sapato roxo</div>
-        </div>
-
-        <div class="sectionTitle">Bônus (bochecha)</div>
-        <div class="choices" id="blushChoices">
-          <div class="choice active" data-blush="0.35">Com blush</div>
-          <div class="choice" data-blush="0">Sem blush</div>
-        </div>
-
+      <div id="verseBox" class="verse">
+        <span id="verseText"></span>
+        <span id="verseRef" class="ref"></span>
       </div>
+
+      <div class="mini" id="status"></div>
     </div>
   </div>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+<script>
+  // Lista inicial (você pode aumentar depois — quantas quiser)
+  const VERSES = [
+    { t: "O Senhor é o meu pastor; nada me faltará.", r: "Salmos 23:1" },
+    { t: "Tudo posso naquele que me fortalece.", r: "Filipenses 4:13" },
+    { t: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito...", r: "João 3:16" },
+    { t: "Entrega o teu caminho ao Senhor; confia nele, e ele o fará.", r: "Salmos 37:5" },
+    { t: "No mundo tereis aflições; mas tende bom ânimo, eu venci o mundo.", r: "João 16:33" },
+    { t: "O choro pode durar uma noite, mas a alegria vem pela manhã.", r: "Salmos 30:5" },
+    { t: "Aquietai-vos e sabei que eu sou Deus.", r: "Salmos 46:10" },
+    { t: "O Senhor é bom, uma fortaleza no dia da angústia.", r: "Naum 1:7" },
+    { t: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus.", r: "Isaías 41:10" },
+    { t: "A paz vos deixo, a minha paz vos dou.", r: "João 14:27" },
+    { t: "Em tudo dai graças.", r: "1 Tessalonicenses 5:18" },
+    { t: "O amor é paciente, o amor é bondoso.", r: "1 Coríntios 13:4" }
+  ];
 
-    const state = {
-      princess: "Luna",
-      dress: "#ff4d88",
-      hair: "#6b3b2a",
-      crown: "#ffd34d",
-      crownOpacity: 1,
-      lip: "#ff4d88",
-      shadow: "#7b61ff",
-      blush: 0.35,
-      shoes: "#2b1b1b",
-      look: "Rosa"
-    };
+  const $date = document.getElementById("date");
+  const $verseText = document.getElementById("verseText");
+  const $verseRef = document.getElementById("verseRef");
+  const $status = document.getElementById("status");
 
-    function apply(){
-      document.documentElement.style.setProperty("--dress", state.dress);
-      document.documentElement.style.setProperty("--hair", state.hair);
-      document.documentElement.style.setProperty("--crown", state.crown);
-      document.documentElement.style.setProperty("--crownOpacity", state.crownOpacity);
-      document.documentElement.style.setProperty("--lip", state.lip);
-      document.documentElement.style.setProperty("--shadowColor", state.shadow);
-      document.documentElement.style.setProperty("--blushOpacity", state.blush);
-      document.documentElement.style.setProperty("--shoes", state.shoes);
+  function toISODate(d){
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,"0");
+    const dd = String(d.getDate()).padStart(2,"0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
-      $("princessName").textContent = state.princess;
-      $("lookName").textContent = state.look;
+  // Hash simples da data -> escolhe um verso consistente para aquele dia
+  function pickVerse(dateStr){
+    // dateStr: YYYY-MM-DD
+    let hash = 0;
+    for (let i=0; i<dateStr.length; i++){
+      hash = (hash * 31 + dateStr.charCodeAt(i)) >>> 0;
     }
+    const idx = hash % VERSES.length;
+    return VERSES[idx];
+  }
 
-    function setActive(containerId, el){
-      const box = $(containerId);
-      [...box.querySelectorAll(".choice")].forEach(c => c.classList.remove("active"));
-      el.classList.add("active");
+  function showFor(dateStr){
+    const v = pickVerse(dateStr);
+    $verseText.textContent = `“${v.t}”`;
+    $verseRef.textContent = `— ${v.r}`;
+    $status.textContent = `Frase do dia: ${dateStr}`;
+  }
+
+  async function shareCurrent(){
+    const text = `${$verseText.textContent}\n${$verseRef.textContent}\n\n🔗 ${location.href}`;
+    if (navigator.share){
+      try{
+        await navigator.share({ text, title: "Frase Bíblica do Dia" });
+        $status.textContent = "✅ Compartilhado!";
+      }catch(e){
+        $status.textContent = "❌ Não deu para compartilhar (cancelado ou não suportado).";
+      }
+    }else{
+      $status.textContent = "Seu celular não mostrou 'Compartilhar'. Use o botão COPIAR e cole onde quiser.";
     }
+  }
 
-    function hookChoices(containerId, handler){
-      const box = $(containerId);
-      box.addEventListener("click", (e) => {
-        const el = e.target.closest(".choice");
-        if(!el) return;
-        setActive(containerId, el);
-        handler(el);
-        apply();
-      });
+  async function copyCurrent(){
+    const text = `${$verseText.textContent}\n${$verseRef.textContent}\n\n🔗 ${location.href}`;
+    try{
+      await navigator.clipboard.writeText(text);
+      $status.textContent = "✅ Copiado! Agora cole no WhatsApp/Instagram/etc.";
+    }catch(e){
+      // fallback: prompt
+      window.prompt("Copie o texto abaixo:", text);
+      $status.textContent = "📋 Copie e cole onde quiser.";
     }
+  }
 
-    hookChoices("princessChoices", (el)=>{
-      state.princess = el.dataset.princess;
-    });
+  // init
+  const today = new Date();
+  $date.value = toISODate(today);
+  showFor($date.value);
 
-    hookChoices("dressChoices", (el)=>{
-      state.dress = el.dataset.dress;
-      const name = el.textContent.trim();
-      state.look = name;
-    });
-
-    hookChoices("hairChoices", (el)=>{
-      state.hair = el.dataset.hair;
-    });
-
-    hookChoices("crownChoices", (el)=>{
-      state.crown = el.dataset.crown;
-      state.crownOpacity = Number(el.dataset.crownOpacity ?? 1);
-    });
-
-    hookChoices("makeChoices", (el)=>{
-      state.lip = el.dataset.lip;
-      state.shadow = el.dataset.shadow;
-    });
-
-    hookChoices("shoeChoices", (el)=>{
-      state.shoes = el.dataset.shoes;
-    });
-
-    hookChoices("blushChoices", (el)=>{
-      state.blush = Number(el.dataset.blush);
-    });
-
-    $("partyBtn").addEventListener("click", ()=>{
-      $("party").style.display = "block";
-      $("partyText").textContent =
-        `${state.princess} chegou na festa com vestido ${state.look} e um look perfeito! ✨`;
-      window.scrollTo({top: document.body.scrollHeight, behavior:"smooth"});
-    });
-
-    $("resetBtn").addEventListener("click", ()=>{
-      location.reload();
-    });
-
-    apply();
-  </script>
+  // events
+  $date.addEventListener("change", () => showFor($date.value));
+  document.getElementById("todayBtn").addEventListener("click", () => {
+    $date.value = toISODate(new Date());
+    showFor($date.value);
+  });
+  document.getElementById("shareBtn").addEventListener("click", shareCurrent);
+  document.getElementById("copyBtn").addEventListener("click", copyCurrent);
+</script>
 </body>
 </html>
